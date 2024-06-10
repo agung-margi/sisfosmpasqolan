@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 const Nav = () => {
   const [click, setClick] = useState(false);
   const [user, setUser] = useState(null); // State untuk menyimpan informasi pengguna
+const [scroll, setScroll] = useState(false);
 
   useEffect(() => {
     // Periksa apakah ada informasi pengguna yang tersimpan di local storage saat komponen dimuat
@@ -15,7 +16,17 @@ const Nav = () => {
     if (loggedInUser) {
       setUser(JSON.parse(loggedInUser)); // Parse informasi pengguna dari local storage
     }
+    const handleScroll = () => {
+      setScroll(window.scrollY > 50); // Set state berdasarkan posisi scroll
+    };
+
+  window.addEventListener("scroll", handleScroll);
+  return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
+
+  
 
   const handleClick = () => setClick(!click);
 
@@ -26,8 +37,8 @@ const Nav = () => {
   };
 
   return (
-    <nav>
-      <div className="h-10vh flex justify-between z-999 w-screen bg-hijau1 text-hijau1txt lg:px-20 px-4 py-4">
+    <nav className= {`fixed top-0 w-full z-50 bg-hijau1 text-hijau1txt transition duration-300 ${scroll ? 'bg-opacity-90 backdrop-blur-lg' : 'bg-opacity-100'}`}>
+      <div className="flex justify-between h-10vh lg:px-20 px-4 py-4"> 
         <div className="flex items-center flex-0">
           <Link to="/">
             <img
@@ -46,7 +57,7 @@ const Nav = () => {
                   Beranda
                 </li>
               </Link>
-              <Link spy={true} smooth={true} to="galeri">
+              <Link spy={true} smooth={true} to="/galeri">
                 <li className="hover:text-hovertxt transition hover:border-b-2 border-primetxt hover:border-hovertxt hover:font-medium cursor-pointer">
                   {" "}
                   Galeri
@@ -77,7 +88,7 @@ const Nav = () => {
                     Beranda
                   </li>
                 </Link>
-                <Link spy={true} smooth={true} to="">
+                <Link spy={true} smooth={true} to="/galeri">
                   <li className="my-4 py-4 border-b border-slate-800 hover:bg-slate-800 hover:rounded">
                     {" "}
                     Galeri

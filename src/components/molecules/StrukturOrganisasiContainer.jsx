@@ -15,8 +15,9 @@ function StrukturOrganisasi() {
     ];
 
     return (
-        <div className="container  mx-auto items-center justify-center">
-            <h2 className="text-center font-bold text-2xl text-hijau1 my-4">Struktur Organisasi</h2>
+       <div className='mx-10 pb-10'>
+         <div className="container mx-auto items-center justify-center">
+            <h2 className="text-center font-bold text-2xl md:text-3xl lg:text-4xl text-dark my-20">Struktur Organisasi</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {positions.map((position, index) => (
                 <div key={index} className="bg-teal-700 rounded-lg p-4">
@@ -25,6 +26,7 @@ function StrukturOrganisasi() {
             ))}
         </div>
         </div>
+       </div>
     );
 }
 
