@@ -37,9 +37,10 @@ const DaftarGuruContainer = () => {
   ];
 
   return (
-    <div className="container  mx-auto items-center justify-center lg:pb-20">
-      <h2 className="text-center font-bold text-2xl md:text-3xl lg:text-4xl text-dark my-20">Daftar Guru</h2>
-      <table className="w-full bg-[#006666] rounded-lg overflow-hidden">
+    <div className="container mx-auto items-center justify-center lg:pb-20">
+      <div className="md:mx-10">
+        <h2 className="text-center font-bold text-2xl md:text-3xl lg:text-4xl text-dark my-20">Daftar Guru</h2>
+      <table className="w-full bg-[#006666] rounded-lg overflow-hidden border border-gray-300">
         <thead>
           <tr>
             <th className="py-2 px-4 bg-[#004d4d] text-white uppercase font-semibold text-sm">Nama</th>
@@ -48,13 +49,14 @@ const DaftarGuruContainer = () => {
         </thead>
         <tbody>
           {gurus.map((guru) => (
-            <tr key={guru.nama} className="bg-white text-gray-700">
-              <td className="py-3 px-10">{guru.nama}</td>
-              <td className="py-3 px-10">{guru.mapel}</td>
+            <tr key={guru.nama} className="bg-white text-gray-700 border-b border-gray-300">
+              <td className="py-3 px-10 border border-gray-300">{guru.nama}</td>
+              <td className="py-3 px-10 border border-gray-300">{guru.mapel}</td>
             </tr>
           ))}
         </tbody>
       </table>
+      </div>
     </div>
   );
 };

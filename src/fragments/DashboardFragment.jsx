@@ -5,7 +5,8 @@ import BiodataContainer from "../components/molecules/BiodataContainer";
 
 const DashboardFragment = () => {
   return (
-    <div className="flex justify-center items-start space-x-10 my-10 h-screen">
+    <div className="container mt-28">
+      <div className="flex justify-center items-start space-x-10 my-10 h-screen">
       <div className="flex justify-center w-[800px] h-[500px] py-10 space-x-10 rounded-md shadow-xl">
         <IndexCardImg />
         <BiodataContainer />
@@ -14,6 +15,7 @@ const DashboardFragment = () => {
         <h2 className="font-bold text-2xl ">Progress Pendaftaran</h2>
         <TimelineAkun />
       </div>
+    </div>
     </div>
   );
 };

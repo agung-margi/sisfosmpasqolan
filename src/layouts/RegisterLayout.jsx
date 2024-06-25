@@ -1,10 +1,10 @@
 import React from "react";
-import RegisterFragments from "../fragments/RegisterFragments";
+import RegisterFragmentss from "../fragments/RegisterFragmentss";
 
 const RegisterLayout = () => {
   return (
     <div className="flex justify-center items-center h-screen">
-      <RegisterFragments />
+      <RegisterFragmentss />
     </div>
   );
 };

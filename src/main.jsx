@@ -10,6 +10,7 @@ import ResetPasswordPage from "./pages/ResetPassword.jsx";
 import Profile from "./pages/Profile.jsx";
 import "./index.css";
 import HomePage from "./pages/HomePage.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
 import DashboardPage from "./pages/admin/Dashboard.jsx";
 import EditPPDB from "./pages/admin/EditPPDB.jsx";
 
@@ -28,10 +29,6 @@ const router = createBrowserRouter([
     element: <LoginPage />,
   },
   {
-    path: "/register",
-    element: <RegisterAccountPage />,
-  },
-  {
     path: "/reset-password",
     element: <ResetPasswordPage />,
   },
@@ -44,16 +41,16 @@ const router = createBrowserRouter([
     element: <Profile />, 
   },
   {
-    path: "/galeri",
-    element: <Profile />,
-  },
-  {
     path: "/daftarsekolah",
     element: <RegisterPage />,
   },
   {
-    path: "/dashboard",
+    path: "/dashboardPage",
     element: <DashboardPage />,
+  },
+  {
+    path: "/dashboard",
+    element: <Dashboard />,
   },
   {
     path: "/editppdb/:id",
