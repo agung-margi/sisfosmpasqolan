@@ -6,34 +6,28 @@ import { useNavigate } from "react-router-dom";
 import axios from '../axios'
 
 const FormLoginFragment = () => {
-  // Mendeklarasikan state 'title' dengan nilai awal "Login" dan fungsi untuk mengubahnya 'setTitle'
   const [title, setTitle] = useState("Login");
-  // Mendeklarasikan state 'errorMessage' dengan nilai awal "" (kosong) dan fungsi untuk mengubahnya 'setErrorMessage'
   const [errorMessage, setErrorMessage] = useState("");
-  // Mendeklarasikan fungsi 'navigate' untuk navigasi antar halaman
   const navigate = useNavigate();
 
-  // Menggunakan efek samping untuk mengubah judul dokumen setiap kali 'title' berubah
   useEffect(() => {
     document.title = title;
   }, [setTitle]);
 
   // Mendefinisikan fungsi asinkron 'handleLogin' yang akan dipanggil saat formulir login dikirim
   const handleLogin = async (e) => {
-    // Mencegah perilaku default dari formulir (refresh halaman)
     e.preventDefault();
     // Mengumpulkan data dari input email dan password
     const data = {
       emailValue: e.target.email.value,
       passwordValue: e.target.password.value,
     };
-    // console.log(data) // (Baris ini di-comment untuk debugging data)
 
     try {
       // Mengirim permintaan POST ke endpoint '/login' dengan data email dan password
       const response = await axios.post('/login', { email: data.emailValue, password: data.passwordValue });
       // Mendapatkan data token, userId, hasStudentRegis, dan studentRegisId dari respon
-      const { token, userId, hasStudentRegis, studentRegisId } = response.data;
+      const { token, userId, hasStudentRegis, studentRegisId,role } = response.data;
       // Menyimpan token dan userId ke localStorage
       localStorage.setItem('token', token);
       localStorage.setItem('userId', userId);
@@ -41,15 +35,14 @@ const FormLoginFragment = () => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       console.log("respon :", response);
 
-      if (hasStudentRegis) {
-        // Jika pengguna sudah terdaftar sebagai siswa, navigasi ke '/dashboard' dengan data state yang sesuai
+      if (role === "admin") {
+        navigate('/dashboardPage', { state: { userId, token } });
+      } else if (hasStudentRegis) {
         navigate('/dashboard', { state: { userId, token, studentRegisId } });
       } else {
-        // Jika pengguna belum terdaftar sebagai siswa, navigasi ke '/daftarsekolah' dengan data state yang sesuai
         navigate('/daftarsekolah', { state: { userId, token } });
       }
     } catch (error) {
-      // Jika terjadi kesalahan, set 'errorMessage' dengan pesan kesalahan dari respon
       setErrorMessage(error.response.data.message);
     }
   };

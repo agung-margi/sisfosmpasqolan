@@ -104,17 +104,11 @@ const BiodataContainer = () => {
       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">:</td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.phoneNumber}</td>
     </tr>
-    <tr>
-      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Status</td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">:</td>
-      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{student.status}</td>
-    </tr>
   </tbody>
 </table>
 </div>
         ))
       ) : (
-        // Menampilkan pesan jika data student tidak ditemukan
         <div>No student data found</div>
       )}
     </div>

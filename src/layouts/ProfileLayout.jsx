@@ -19,7 +19,7 @@ const ProfileLayout = () => {
       <Footer />
     </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProfileLayout
+export default ProfileLayout;

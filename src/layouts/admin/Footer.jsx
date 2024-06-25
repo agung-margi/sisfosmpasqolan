@@ -2,11 +2,9 @@ import React from "react";
 
 function FooterLayout() {
   return (
-    <div>
-      <div className="border-t border-blue-900 h-12">
-        <p className="text-center text-sm py-3 text-end mr-4">Copyright &copy; 2024</p>
-      </div>
-    </div>
+    <footer className="bg-white shadow p-4 text-center">
+      <p>&copy; SMPI Asqolan Boarding School. All rights reserved.</p>
+    </footer>
   );
 }
 

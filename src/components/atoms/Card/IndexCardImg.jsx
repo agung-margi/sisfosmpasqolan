@@ -45,12 +45,9 @@ const IndexCardImg = () => {
   }, [userId, studentRegisId, token]);
 
   if (loading) {
-    // Menampilkan loading jika data sedang diambil
     return <div>Loading...</div>;
   }
-
   if (error) {
-    // Menampilkan error jika terjadi kesalahan
     return <div>Error: {error}</div>;
   }
 
@@ -64,8 +61,7 @@ const IndexCardImg = () => {
 
         ))
       ) : (
-        // Menampilkan pesan jika data student tidak ditemukan
-        <div>No student data found</div>
+        <div>No Image found</div>
       )}
     </div>
   );

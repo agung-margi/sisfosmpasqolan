@@ -19,7 +19,6 @@ const RegisterFragments = () => {
         AsalSekolah: e.target.AsalSekolah?.value || "",
         AlamatRumah: e.target.AlamatRumah?.value || "",
         NomorHP: e.target.NomorHP?.value || "",
-        // Pastikan untuk mengecek apakah e.target.PasFoto ada dan memiliki file
         UploadFoto: e.target.PasFoto?.files[0]?.name || "",
       };
       // Simpan data ke local storage
