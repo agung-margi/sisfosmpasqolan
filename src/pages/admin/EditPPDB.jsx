@@ -11,7 +11,6 @@ function DashboardPage() {
       <div className="h-screen w-full">
         <HeaderLayout />
         <DetailPPDBLayout />
-        <FooterLayout />
       </div>
     </div>
   );

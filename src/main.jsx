@@ -12,6 +12,11 @@ import "./index.css";
 import HomePage from "./pages/HomePage.jsx";
 import DashboardPage from "./pages/admin/Dashboard.jsx";
 import EditPPDB from "./pages/admin/EditPPDB.jsx";
+import RegisterFragments from "./fragments/RegisterFragments.jsx";
+import DashboardFragment from "./fragments/DashboardFragment.jsx";
+import TeacherPage from "./pages/admin/Teacher.jsx";
+import PPDBPage from "./pages/admin/PPDB.jsx";
+import UserPage from "./pages/admin/User.jsx";
 
 const router = createBrowserRouter([
   {
@@ -21,7 +26,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/pendaftaran",
-    element: <RegisterAccountPage />,
+    element: <RegisterFragments />,
   },
   {
     path: "/login",
@@ -54,6 +59,22 @@ const router = createBrowserRouter([
   {
     path: "/editppdb/:id",
     element: <EditPPDB />,
+  },
+  {
+    path: "/register-progress",
+    element: <DashboardFragment />,
+  },
+  {
+    path: "/teacher",
+    element: <TeacherPage />,
+  },
+  {
+    path: "/ppdb",
+    element: <PPDBPage />,
+  },
+  {
+    path: "/user/",
+    element: <UserPage />,
   },
 ]);
 
