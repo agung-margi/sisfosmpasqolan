@@ -12,14 +12,11 @@ const ProfileLayout = () => {
   return (
     <div>
       <Nav />
-      <div className='container p-5'>
       <TentangKami/>
       <StrukturOrganisasi/>
       <DaftarGuruContainer/>
       <VisiMisiContainer/>
-      <EkskulContainer/>
       <Footer />
-    </div>
     </div>
   )
 }

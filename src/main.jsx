@@ -12,6 +12,7 @@ import "./index.css";
 import HomePageFix from "./pages/HomePage.jsx";
 import DashboardPage from "./pages/admin/Dashboard.jsx";
 import EditPPDB from "./pages/admin/EditPPDB.jsx";
+import Ekstrakulikuler from "./pages/Ekstrakulikuler.jsx";
 
 const router = createBrowserRouter([
   {
@@ -55,7 +56,10 @@ const router = createBrowserRouter([
     path: "/editppdb/:id",
     element: <EditPPDB />,
   },
-
+  {
+    path: "/ekstrakulikuler",
+    element: <Ekstrakulikuler />,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

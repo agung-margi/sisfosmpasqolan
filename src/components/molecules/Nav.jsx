@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaTimes, FaSearch } from "react-icons/fa";
 import { CiMenuFries } from "react-icons/ci";
 import { VscAccount } from "react-icons/vsc";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 
 const Nav = () => {
   const [click, setClick] = useState(false);
@@ -26,8 +26,8 @@ const Nav = () => {
 
   const renderMenuItems = (isMobile = false) => (
     <ul className={`flex ${isMobile ? "flex-col text-center text-xl p-20" : "gap-12 text-[1.2rem]"}`}>
-      {["Beranda", "Ekstrakulikuler", "Profile", "Pendaftaran"].map((item, index) => (
-        <Link key={index} spy={true} smooth={true} to={`/${item.toLowerCase()}`}>
+      {["Home", "Ekstrakulikuler", "Profile", "Pendaftaran"].map((item, index) => (
+        <Link key={index} spy={true} smooth={true} to={`/${item.toLowerCase() === "home" ? "" : item.toLowerCase()}`}>
           <li className={`hover:text-hovertxt transition ${isMobile ? "my-4 py-4 border-b border-slate-800 hover:bg-slate-800 hover:rounded" : "hover:border-b-2 border-primetxt hover:border-hovertxt hover:font-medium cursor-pointer"}`}>
             {item}
           </li>
