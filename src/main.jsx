@@ -9,14 +9,14 @@ import RegisterAccountPage from "./pages/RegisterAccount.jsx";
 import ResetPasswordPage from "./pages/ResetPassword.jsx";
 import Profile from "./pages/Profile.jsx";
 import "./index.css";
-import HomePage from "./pages/HomePage.jsx";
+import HomePageFix from "./pages/HomePage.jsx";
 import DashboardPage from "./pages/admin/Dashboard.jsx";
 import EditPPDB from "./pages/admin/EditPPDB.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePage />,
+    element: <HomePageFix />,
     errorElement: <ErrorPage />,
   },
   {
@@ -55,6 +55,7 @@ const router = createBrowserRouter([
     path: "/editppdb/:id",
     element: <EditPPDB />,
   },
+
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
