@@ -1,10 +1,10 @@
 import React from "react";
-import HeaderLayout from "../../layouts/admin/Header";
-import SiderLayout from "../../layouts/admin/Sider";
-import UserLayout from "../../layouts/admin/User";
+import HeaderLayout from "../../../layouts/admin/Header";
+import SiderLayout from "../../../layouts/admin/Sider";
+import PPDBLayout from "../../../layouts/admin/PPDB";
 
-function UserPage() {
-  const titleMenu = "All Users";
+function PPDBPage() {
+  const titleMenu = "All PPDB";
   const rows = [];
 
   return (
@@ -13,11 +13,11 @@ function UserPage() {
         <SiderLayout />
         <div className="h-screen w-full">
           <HeaderLayout titleMenu={titleMenu} rows={rows} />
-          <UserLayout />
+          <PPDBLayout />
         </div>
       </div>
     </div>
   );
 }
 
-export default UserPage;
+export default PPDBPage;

@@ -11,12 +11,14 @@ import Profile from "./pages/Profile.jsx";
 import "./index.css";
 import HomePage from "./pages/HomePage.jsx";
 import DashboardPage from "./pages/admin/Dashboard.jsx";
-import EditPPDB from "./pages/admin/EditPPDB.jsx";
 import RegisterFragments from "./fragments/RegisterFragments.jsx";
 import DashboardFragment from "./fragments/DashboardFragment.jsx";
-import TeacherPage from "./pages/admin/Teacher.jsx";
-import PPDBPage from "./pages/admin/PPDB.jsx";
-import UserPage from "./pages/admin/User.jsx";
+import TeacherPage from "./pages/admin/teacher/Teacher.jsx";
+import PPDBPage from "./pages/admin/ppdb/PPDB.jsx";
+import EditPPDBPage from "./pages/admin/ppdb/EditPPDB.jsx";
+import UserPage from "./pages/admin/user/User.jsx";
+import AddTeacherPage from "./pages/admin/teacher/AddTeacher.jsx";
+import EditTeacherPage from "./pages/admin/teacher/EditTeacher.jsx";
 
 const router = createBrowserRouter([
   {
@@ -58,7 +60,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/editppdb/:id",
-    element: <EditPPDB />,
+    element: <EditPPDBPage />,
   },
   {
     path: "/register-progress",
@@ -67,6 +69,14 @@ const router = createBrowserRouter([
   {
     path: "/teacher",
     element: <TeacherPage />,
+  },
+  {
+    path: "/teacher/add",
+    element: <AddTeacherPage />,
+  },
+  {
+    path: "/teacher/edit/:id",
+    element: <EditTeacherPage />,
   },
   {
     path: "/ppdb",

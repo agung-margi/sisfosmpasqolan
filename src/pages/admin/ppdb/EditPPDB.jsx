@@ -1,8 +1,7 @@
 import React from "react";
-import HeaderLayout from "../../layouts/admin/Header";
-import SiderLayout from "../../layouts/admin/Sider";
-import FooterLayout from "../../layouts/admin/Footer";
-import DetailPPDBLayout from "../../layouts/admin/DetailPPDB";
+import HeaderLayout from "../../../layouts/admin/Header";
+import SiderLayout from "../../../layouts/admin/Sider";
+import DetailPPDBLayout from "../../../layouts/admin/DetailPPDB";
 
 function DashboardPage() {
   return (

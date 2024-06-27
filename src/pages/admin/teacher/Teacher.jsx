@@ -1,10 +1,10 @@
 import React from "react";
-import HeaderLayout from "../../layouts/admin/Header";
-import SiderLayout from "../../layouts/admin/Sider";
-import PPDBLayout from "../../layouts/admin/PPDB";
+import HeaderLayout from "../../../layouts/admin/Header";
+import SiderLayout from "../../../layouts/admin/Sider";
+import TeacherLayout from "../../../layouts/admin/Teacher";
 
-function PPDBPage() {
-  const titleMenu = "All PPDB";
+function TeacherPage() {
+  const titleMenu = "All Teachers";
   const rows = [];
 
   return (
@@ -13,11 +13,11 @@ function PPDBPage() {
         <SiderLayout />
         <div className="h-screen w-full">
           <HeaderLayout titleMenu={titleMenu} rows={rows} />
-          <PPDBLayout />
+          <TeacherLayout />
         </div>
       </div>
     </div>
   );
 }
 
-export default PPDBPage;
+export default TeacherPage;
