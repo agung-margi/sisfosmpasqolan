@@ -23,7 +23,7 @@ function ContaintLayout() {
         setLoading(false);
       }
     };
-    
+
     fetchData();
   }, []);
 
