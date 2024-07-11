@@ -1,37 +1,61 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import InputFormLabel from "../components/atoms/Input";
 import IndexButton from "../components/atoms/Button";
 import { Result } from "antd";
 import RegisterContainer from "../components/molecules/RegisterContainer";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DataForm from "../components/data/DataForm";
+import axios from "../axiosConfig";
+import TokenContext from "../components/data/AuthTokenContext"
 
 const RegisterFragments = () => {
   const [isSuccess, setIsSuccess] = useState(false);
+  const { tokenInfo, refreshToken } = useContext(TokenContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    refreshToken();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const fullName = e.target.NamaLengkap?.value || "";
+    const placeOfBirth = e.target.TempatLahir?.value || "";
+    const dateOfBirth = e.target.TanggalLahir?.value || "";
+    const schoolFrom = e.target.AsalSekolah?.value || "";
+    const address = e.target.AlamatRumah?.value || "";
+    const phoneNumber = e.target.phoneNumber?.value || "";
+
+    const formData = new FormData();
+    formData.append('fullName', fullName);
+    formData.append('placeOfBirth', placeOfBirth);
+    formData.append('dateOfBirth', dateOfBirth);
+    formData.append('schoolFrom', schoolFrom);
+    formData.append('address', address);
+    formData.append('phoneNumber', phoneNumber);
+    formData.append('userId', tokenInfo.userId);
+
+    if (e.target.image?.files[0]) {
+      formData.append('image', e.target.image.files[0]);
+    }
+
     try {
-      const formData = {
-        NamaLengkap: e.target.NamaLengkap?.value || "",
-        TempatLahir: e.target.TempatLahir?.value || "",
-        TanggalLahir: e.target.TanggalLahir?.value || "",
-        AsalSekolah: e.target.AsalSekolah?.value || "",
-        AlamatRumah: e.target.AlamatRumah?.value || "",
-        NomorHP: e.target.NomorHP?.value || "",
-        // Pastikan untuk mengecek apakah e.target.PasFoto ada dan memiliki file
-        UploadFoto: e.target.PasFoto?.files[0]?.name || "",
-      };
-      // Simpan data ke local storage
-      Object.keys(formData).forEach((key) => {
-        localStorage.setItem(key, formData[key]);
+      const response = await axios.post('/studentRegis', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${tokenInfo.token}`
+        },
       });
-      // Redirect ke halaman dashboard setelah data disimpan
-      setIsSuccess(true);
-      window.location.href = "/dashboard";
-      console.log("Data berhasil terkirim");
+
+      if (response.data.success) {
+        setIsSuccess(true);
+        navigate('/dashboard');
+      } else {
+        console.error("Gagal mengirim data:", response.data.message);
+      }
     } catch (error) {
-      console.error("Gagal mengirim data:", error);
+      console.error("Gagal mengirim data:", error.response ? error.response.data : error.message);
     }
   };
 

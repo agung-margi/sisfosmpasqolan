@@ -1,35 +1,49 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext } from "react";
+import AuthContext from "../data/AuthContext"
 
 const BiodataContainer = () => {
-  // State untuk menyimpan data dari local storage
-  const [userData, setUserData] = useState({});
+  const { studentData, loading, error } = useContext(AuthContext);
 
-  // Mengambil data dari local storage saat komponen dimount
-  useEffect(() => {
-    const dataFromLocalStorage = {
-      NamaLengkap: localStorage.getItem("NamaLengkap"),
-      TempatLahir: localStorage.getItem("TempatLahir"),
-      TanggalLahir: localStorage.getItem("TanggalLahir"),
-      AsalSekolah: localStorage.getItem("AsalSekolah"),
-      AlamatRumah: localStorage.getItem("AlamatRumah"),
-      NomorHPWA: localStorage.getItem("NomorHP/WA"),
-      UploadFoto: localStorage.getItem("UploadFoto"),
-    };
-
-    // Set data ke dalam state
-    setUserData(dataFromLocalStorage);
-  }, []);
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="sm:mx-auto sm:w-full sm:max-w-sm space-y-2 mx-10">
-      <p>Nama Lengkap: {userData.NamaLengkap}</p>
-      <p>Tempat Lahir: {userData.TempatLahir}</p>
-      <p>Tanggal Lahir: {userData.TanggalLahir}</p>
-      <p>Asal Sekolah: {userData.AsalSekolah}</p>
-      <p>Alamat Rumah: {userData.AlamatRumah}</p>
-      <p>Nomor HP/WA: {userData.NomorHPWA}</p>
+      {studentData ? <StudentTable studentData={studentData} /> : <div>No student data found</div>}
     </div>
   );
 };
+
+const fieldsToShow = [
+  { key: 'fullName', label: 'Nama Lengkap' },
+  { key: 'placeOfBirth', label: 'Tempat Lahir' },
+  { key: 'dateOfBirth', label: 'Tanggal Lahir' },
+  { key: 'schoolFrom', label: 'Asal Sekolah' },
+  { key: 'address', label: 'Alamat' },
+  { key: 'phoneNumber', label: 'Nomor Hp' },
+];
+
+const StudentTable = ({ studentData }) => (
+  <div key={studentData.id} className="space-y-2">
+    <table className="min-w-full divide-y divide-gray-200">
+      <thead className="bg-gray-50">
+        <tr>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Field</th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
+        </tr>
+      </thead>
+      <tbody className="bg-white divide-y divide-gray-200">
+        {fieldsToShow.map(({ key, label }) => (
+          <tr key={key}>
+            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{label}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">:</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{studentData[key]}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
 
 export default BiodataContainer;

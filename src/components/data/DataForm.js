@@ -12,7 +12,7 @@ const DataForm = [
     type: "text",
   },
   {
-    label: "Tanggal Lahir",
+    label: "Tanggal Lahir coy",
     name: "TanggalLahir",
     placeholder: "mm/dd/yyyy",
     type: "date",
@@ -31,13 +31,13 @@ const DataForm = [
   },
   {
     label: "Nomor HP/WA",
-    name: "NomorHP/WA",
+    name: "phoneNumber",
     placeholder: "62-888-888-888",
     type: "text",
   },
   {
     label: "Pas Foto",
-    name: "UploadFoto",
+    name: "image",
     placeholder: "Upload foto anda",
     type: "file",
   },

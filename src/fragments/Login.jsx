@@ -1,32 +1,44 @@
+import { useState, useEffect } from "react";
 import InputFormLabel from "../components/atoms/Input/index";
 import IndexButton from "../components/atoms/Button";
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from '../axiosConfig'
+import { message } from "antd";
 
 const FormLoginFragment = () => {
   const [title, setTitle] = useState("Login");
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     document.title = title;
   }, [setTitle]);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     const data = {
       emailValue: e.target.email.value,
       passwordValue: e.target.password.value,
     };
 
-    const emailStored = localStorage.getItem("email");
-    const passwordStored = localStorage.getItem("password");
+    console.log(data)
 
-    if (data.emailValue === emailStored && data.passwordValue === passwordStored) {
-      localStorage.setItem("email", data.emailValue);
-      localStorage.setItem("password", data.passwordValue);
-      window.location.href = "/pendaftaran";
-    } else {
-      setErrorMessage("Email atau password salah");
+    try {
+      const response = await axios.post("/login", { email: data.emailValue, password: data.passwordValue });
+
+      const { hasStudentRegis, role } = response.data;
+
+      if (role === "Admin") {
+        navigate('/dashboardPage');
+      } else if (hasStudentRegis) {
+        navigate('/dashboard');
+      } else {
+        navigate('/daftarsekolah');
+      }
+    } catch (error) {
+      alert(error.response.data.message)
+      setErrorMessage(error.response.data.message);
     }
   };
 

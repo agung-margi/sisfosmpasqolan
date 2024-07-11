@@ -4,20 +4,28 @@ import ErrorPage from "./pages/404.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from "./pages/Login.jsx";
 import RegisterPage from "./pages/Register.jsx";
-import BurgerMenu from "./pages/BurgerMenu.jsx";
 import RegisterAccountPage from "./pages/RegisterAccount.jsx";
 import ResetPasswordPage from "./pages/ResetPassword.jsx";
 import Profile from "./pages/Profile.jsx";
 import "./index.css";
-import HomePageFix from "./pages/HomePage.jsx";
+import HomePage from "./pages/HomePage.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
 import DashboardPage from "./pages/admin/Dashboard.jsx";
-import EditPPDB from "./pages/admin/EditPPDB.jsx";
+import RegisterFragments from "./fragments/RegisterFragments.jsx";
+import DashboardFragment from "./fragments/DashboardFragment.jsx";
+import TeacherPage from "./pages/admin/teacher/Teacher.jsx";
+import PPDBPage from "./pages/admin/ppdb/PPDB.jsx";
+import EditPPDBPage from "./pages/admin/ppdb/EditPPDB.jsx";
+import UserPage from "./pages/admin/user/User.jsx";
+import AddTeacherPage from "./pages/admin/teacher/AddTeacher.jsx";
+import EditTeacherPage from "./pages/admin/teacher/EditTeacher.jsx";
+import HomePageFix from "./pages/HomePage.jsx";
 import Ekstrakulikuler from "./pages/Ekstrakulikuler.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <HomePageFix />,
+    element: <HomePage />,
     errorElement: <ErrorPage />,
   },
   {
@@ -29,16 +37,8 @@ const router = createBrowserRouter([
     element: <LoginPage />,
   },
   {
-    path: "/register",
-    element: <RegisterAccountPage />,
-  },
-  {
     path: "/reset-password",
     element: <ResetPasswordPage />,
-  },
-  {
-    path: "/menu",
-    element: <BurgerMenu />,
   },
   {
     path: "/profile",
@@ -49,12 +49,40 @@ const router = createBrowserRouter([
     element: <RegisterPage />,
   },
   {
-    path: "/dashboard",
+    path: "/dashboardPage",
     element: <DashboardPage />,
   },
   {
+    path: "/dashboard",
+    element: <Dashboard />,
+  },
+  {
     path: "/editppdb/:id",
-    element: <EditPPDB />,
+    element: <EditPPDBPage />,
+  },
+  {
+    path: "/register-progress",
+    element: <DashboardFragment />,
+  },
+  {
+    path: "/teacher",
+    element: <TeacherPage />,
+  },
+  {
+    path: "/teacher/add",
+    element: <AddTeacherPage />,
+  },
+  {
+    path: "/teacher/edit/:id",
+    element: <EditTeacherPage />,
+  },
+  {
+    path: "/ppdb",
+    element: <PPDBPage />,
+  },
+  {
+    path: "/user/",
+    element: <UserPage />,
   },
   {
     path: "/ekstrakulikuler",

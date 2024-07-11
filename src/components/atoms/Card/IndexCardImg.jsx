@@ -1,28 +1,21 @@
-import React from "react";
+import React, { useContext } from "react";
+import AuthContext from "../../data/AuthContext"
 
 const IndexCardImg = () => {
-  const ImageFromLocalStorage = ({ localStorageKey }) => {
-    const imageData = localStorage.getItem(localStorageKey);
-    if (!imageData) {
-      return (
-        <img
-          src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-          alt="Gambar Default"
-          className="size-56 object-cover shadow-md "
-        />
-      );
-    }
-    return (
-      <img
-        src={imageData}
-        alt="Foto Profil"
-        className="size-56 object-cover shadow-md"
-      />
-    );
-  };
+  const { studentData, loading, error } = useContext(AuthContext);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
-    <div>
-      <ImageFromLocalStorage localStorageKey="formData" />
+    <div className="sm:mx-auto sm:w-full sm:max-w-sm space-y-2 mx-10">
+      {studentData ? (
+        <div key={studentData.id} className="space-y-2">
+          <img src={studentData.images} alt="Student" className='w-1/2 float-right' />
+        </div>
+      ) : (
+        <div>No Image found</div>
+      )}
     </div>
   );
 };

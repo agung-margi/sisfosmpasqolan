@@ -6,9 +6,9 @@ import Footer from '../components/molecules/Footer'
 const DashboardLayout = () => {
   return (
     <div>
-      <Nav/>
-      <DashboardFragment/>
-      <Footer/>
+      <Nav />
+      <DashboardFragment />
+      <Footer />
     </div>
   )
 }

@@ -1,42 +1,40 @@
 import React, { useState } from "react";
-import { FaUserAlt } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { FaUser } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
-function Header() {
-  const [showSubNav, setShowSubNav] = useState(false);
-  const navigate = useNavigate();
+function HeaderLayout({ titleMenu, rows }) {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const toggleSubNav = () => {
-    setShowSubNav(!showSubNav);
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const handleLogout = () => {
-    return navigate("/login");
+  const handleInputChange = (event) => {
+    setSearchQuery(event.target.value);
   };
+
+  // Filter rows based on searchQuery
+  const filteredRows = rows.filter((row) => row.fullname.toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
-    <div className="text-3xl w-full h-14 bg-blue-600">
-      <div className="flex justify-end py-2.5 pr-10 text-lg relative">
-        <div onClick={toggleSubNav}>
-          <div className="flex items-center gap-4 bg-blue-800 text-white py-1 px-4">
-            <p>Administrator</p>
-            <FaUserAlt className="cursor-pointer" />
-          </div>
-        </div>
-        {showSubNav && (
-          <div className="absolute top-full right-0 bg-white border border-gray-200 rounded shadow-md mt-1 ml-2 mr-8">
-            <ul className="">
-              <li>
-                <button onClick={handleLogout} className="block px-6 py-2 text-gray-800 hover:bg-gray-200 w-full text-left ">
-                  Logout
-                </button>
-              </li>
+    <header className="p-4 flex justify-between items-center my-6">
+      <h1 className="flex text-3xl font-semibold ml-10 items-center">{titleMenu}</h1>
+      <div className="flex mr-10 items-center gap-12">
+        <FaUser className="ml-4 cursor-pointer text-lg" onClick={toggleDropdown} />
+        {isDropdownOpen && (
+          <div className="flex absolute right-10 mt-32 bg-white border rounded shadow-lg z-10">
+            <ul className="py-1">
+              <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Profile</li>
+              <Link to="/login">
+                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">Logout</li>
+              </Link>
             </ul>
           </div>
         )}
       </div>
-    </div>
+    </header>
   );
 }
 
-export default Header;
+export default HeaderLayout;

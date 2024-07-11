@@ -1,20 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { Pagination, Breadcrumb } from "antd";
-import { redirect, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function ContaintLayout() {
-  const [userData, setUserData] = useState([]);
+  const [studentData, setStudentData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const pageSize = 10;
   const userRole = "admin";
 
   useEffect(() => {
-    fetch("https://dummyjson.com/users")
-      .then((res) => res.json())
-      .then((data) => setUserData(data.users));
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/api/students");
+        setStudentData(response.data.students);
+        console.log(response.data.students);
+        setLoading(false);
+      } catch (error) {
+        setError(error.message);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  // menampilkan data yang sesuai dengan halaman yang dipilih
   const onPageChange = (page) => {
     setCurrentPage(page);
   };
@@ -23,39 +35,66 @@ function ContaintLayout() {
   const endIndex = startIndex + pageSize;
 
   const navigate = useNavigate();
-  const onProcess = (user) => {
-    return navigate(`/editppdb/${user.id}`);
+  const onProcess = (student) => {
+    return navigate(`/editppdb/${student.userId}`);
   };
-  // Mencari index awal dan akhir data yang ditampilkan di halaman saat ini
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  // Pastikan studentData adalah sebuah array sebelum memprosesnya
+  const dataToDisplay = Array.isArray(studentData) ? studentData.slice(startIndex, endIndex) : [];
 
   return (
     <div className="">
       <div className="px-2 border text-center">
-        <Breadcrumb style={{ margin: "16px 0" }}>
+        {/* <Breadcrumb style={{ margin: "16px 0" }}>
           <Breadcrumb.Item>Home</Breadcrumb.Item>
           <Breadcrumb.Item>List PPDB</Breadcrumb.Item>
-        </Breadcrumb>
+        </Breadcrumb> */}
         <table className="table-auto w-full mt-2">
           <thead>
             <tr className="border h-10">
               <th>No</th>
               <th>Nama</th>
+              <th>Tempat Lahir</th>
+              <th>Tanggal Lahir</th>
+              <th>Asal Sekolah</th>
               <th>Alamat</th>
+              <th>Nomor Telepon</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {userData.slice(startIndex, endIndex).map((user, index) => (
-              <tr key={user.id} className="border h-10">
+            {dataToDisplay.map((student, index) => (
+              <tr key={student.id} className="border h-10">
                 <td>{startIndex + index + 1}</td>
-                <td>{`${user.firstName} ${user.lastName}`}</td>
-                <td>{`${user.address.address}, ${user.address.city}, ${user.address.postalCode}`}</td>
+                <td>{student.fullName}</td>
+                <td>{student.placeOfBirth}</td>
+                <td>{student.dateOfBirth}</td>
+                <td>{student.schoolFrom}</td>
+                <td>{student.address}</td>
+                <td>{student.phoneNumber}</td>
                 <td>
-                  <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded">Process</button>
-                  {userRole == "administrator" && (
+                  <button
+                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-4 rounded"
+                    onClick={() => onProcess(student)}
+                  >
+                    Process
+                  </button>
+                  {userRole === "administrator" && (
                     <>
-                      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">Edit</button>
-                      <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded ml-2">Delete</button>
+                      <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded">
+                        Edit
+                      </button>
+                      <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded ml-2">
+                        Delete
+                      </button>
                     </>
                   )}
                 </td>
@@ -64,7 +103,12 @@ function ContaintLayout() {
           </tbody>
         </table>
         <div className="mt-4 mb-4">
-          <Pagination current={currentPage} total={userData.length} pageSize={pageSize} onChange={onPageChange} />
+          <Pagination
+            current={currentPage}
+            total={studentData.length}
+            pageSize={pageSize}
+            onChange={onPageChange}
+          />
         </div>
       </div>
     </div>

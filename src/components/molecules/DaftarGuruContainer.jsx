@@ -8,9 +8,10 @@ const DaftarGuruContainer = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/teachers');
+        const response = await axios.get('http://localhost:3000/api/teachers?page=1&limit=8&orderBy=2');
+        console.log("response guru", response)
         if (response.status === 200) {
-          const teacherData = response.data;
+          const teacherData = response.data.data;
           setGurus(teacherData.data); // Update state with actual teacher data
         } else {
           console.error(`Error fetching teacher data: ${response.statusText}`);
@@ -38,12 +39,18 @@ const DaftarGuruContainer = () => {
             </tr>
           </thead>
           <tbody>
-            {gurus.map((guru) => (
-              <tr key={guru.id} className="bg-white text-gray-700">
-                <td className="py-3 px-10">{guru.fullName}</td>
-                <td className="py-3 px-10">{guru.subjects}</td>
+            {gurus && gurus.length > 0 ? (
+              gurus.map((guru) => (
+                <tr key={guru.id} className="bg-white text-gray-700">
+                  <td className="py-3 px-10">{guru.fullName}</td>
+                  <td className="py-3 px-10">{guru.subjects}</td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="2" className="py-3 px-10 text-center">No teachers found.</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       )}
