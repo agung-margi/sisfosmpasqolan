@@ -13,8 +13,8 @@ const columns = [
   { id: "action", label: "Action", minWidth: 100, align: "center" },
 ];
 
-const createData = (id, fullName, placeOfBirth, dateOfBirth, schoolFrom, address, phoneNumber, status, images) => ({
-  id, fullName, placeOfBirth, dateOfBirth, schoolFrom, address, phoneNumber, status, images
+const createData = (id, fullName, placeOfBirth, dateOfBirth, schoolFrom, address, phoneNumber, status, images, userId) => ({
+  id, fullName, placeOfBirth, dateOfBirth, schoolFrom, address, phoneNumber, status, images, userId
 });
 
 function PPDBLayout() {
@@ -35,7 +35,7 @@ function PPDBLayout() {
         headers: { Authorization: `Bearer ${tokenInfo.token}` },
       });
       const students = response.data.students.map((student) =>
-        createData(student.id, student.fullName, student.placeOfBirth, student.dateOfBirth, student.schoolFrom, student.address, student.phoneNumber, student.status, student.images)
+        createData(student.id, student.fullName, student.placeOfBirth, student.dateOfBirth, student.schoolFrom, student.address, student.phoneNumber, student.status, student.images, student.userId)
       );
       setRows(students);
     } catch (error) {

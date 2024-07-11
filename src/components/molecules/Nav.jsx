@@ -122,7 +122,7 @@ const Nav = () => {
               <span className="ml-2">{user.name}</span>
             </button>
           ) : (
-            <Link className="flex" to={"/login"}>
+            <Link className="flex" to={"/dashboard"}>
               <button>{click ? <VscAccount /> : <VscAccount size={25} />}</button>
             </Link>
           )}

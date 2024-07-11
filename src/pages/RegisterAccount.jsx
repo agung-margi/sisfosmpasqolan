@@ -1,5 +1,5 @@
 import React from "react";
-import RegisterAccoutFragment from "../fragments/RegisterAccount";
+import RegisterAccoutFragment from '../fragments/RegisterAccount'
 import AuthLayout from "../layouts/AuthLayout";
 
 const RegisterAccountPage = () => {

@@ -1,10 +1,10 @@
 import React from "react";
-import HeaderLayout from "../../layouts/admin/Header";
-import SiderLayout from "../../layouts/admin/Sider";
-import TeacherLayout from "../../layouts/admin/Teacher";
+import HeaderLayout from "../../../layouts/admin/Header";
+import SiderLayout from "../../../layouts/admin/Sider";
+import UserLayout from "../../../layouts/admin/User";
 
-function TeacherPage() {
-  const titleMenu = "All Teachers";
+function UserPage() {
+  const titleMenu = "All Users";
   const rows = [];
 
   return (
@@ -13,11 +13,11 @@ function TeacherPage() {
         <SiderLayout />
         <div className="h-screen w-full">
           <HeaderLayout titleMenu={titleMenu} rows={rows} />
-          <TeacherLayout />
+          <UserLayout />
         </div>
       </div>
     </div>
   );
 }
 
-export default TeacherPage;
+export default UserPage;

@@ -16,7 +16,7 @@ export const TokenProvider = ({ children }) => {
             const decoded = jwtDecode(newToken);
             setTokenInfo({ userId: decoded.id, token: newToken });
         } catch (error) {
-            if (error.response) navigate('/');
+            if (error.response) navigate('/login');
         }
     };
 
@@ -26,7 +26,7 @@ export const TokenProvider = ({ children }) => {
         };
 
         initialize();
-    }, []); // [] digunakan agar efek ini hanya berjalan sekali saat komponen dipasang
+    }, []);
 
     return (
         <TokenContext.Provider value={{ tokenInfo, refreshToken }}>

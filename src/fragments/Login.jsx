@@ -3,7 +3,7 @@ import InputFormLabel from "../components/atoms/Input/index";
 import IndexButton from "../components/atoms/Button";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import instance from '../axiosConfig'
+import axios from '../axiosConfig'
 
 const FormLoginFragment = () => {
   const [title, setTitle] = useState("Login");
@@ -22,9 +22,9 @@ const FormLoginFragment = () => {
     };
 
     try {
-      const response = await instance.post('/login', { email: data.emailValue, password: data.passwordValue });
+      const response = await axios.post('/login', { email: data.emailValue, password: data.passwordValue });
 
-      const { hasStudentRegis, role, userId } = response.data;
+      const { hasStudentRegis, role } = response.data;
 
       if (role === "Admin") {
         navigate('/dashboardPage');

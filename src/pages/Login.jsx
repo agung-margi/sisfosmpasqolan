@@ -4,9 +4,11 @@ import AuthLayout from "../layouts/AuthLayout";
 
 const LoginPage = () => {
   return (
-    <AuthLayout title="Login" type="login">
-      <FormLoginFragment />
-    </AuthLayout>
+    <>
+      <AuthLayout title="Login" type="login">
+        <FormLoginFragment />
+      </AuthLayout>
+    </>
   );
 };
 

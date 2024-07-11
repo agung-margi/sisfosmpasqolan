@@ -5,7 +5,7 @@ import { Result } from "antd";
 import RegisterContainer from "../components/molecules/RegisterContainer";
 import { Link, useNavigate } from "react-router-dom";
 import DataForm from "../components/data/DataForm";
-import instance from "../axiosConfig";
+import axios from "../axiosConfig";
 import TokenContext from "../components/data/AuthTokenContext"
 
 const RegisterFragments = () => {
@@ -41,7 +41,7 @@ const RegisterFragments = () => {
     }
 
     try {
-      const response = await instance.post('/studentRegis', formData, {
+      const response = await axios.post('/studentRegis', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${tokenInfo.token}`
