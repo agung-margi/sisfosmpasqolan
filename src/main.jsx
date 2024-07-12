@@ -24,6 +24,7 @@ import AddEkskulPage from "./pages/admin/ekskul/AddEkskul.jsx";
 import HomePageFix from "./pages/HomePage.jsx";
 import Ekstrakulikuler from "./pages/Ekstrakulikuler.jsx";
 import { ToastContainer } from "react-toastify";
+import { TokenProvider } from "./components/data/AuthTokenContext";
 import "react-toastify/dist/ReactToastify.css";
 
 const router = createBrowserRouter([
