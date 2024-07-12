@@ -8,24 +8,30 @@ import axios from "../../axiosConfig";
 function SiderLayout() {
   const { tokenInfo } = useContext(TokenContext);
   const [userData, setUserData] = useState({ fullName: "", role: "" });
+
   useEffect(() => {
     const fetchUserData = async () => {
+      if (!tokenInfo.userId) {
+        return;
+      }
       try {
         const response = await axios.get(`/users/${tokenInfo.userId}`, {
           headers: {
             Authorization: `Bearer ${tokenInfo.token}`,
           },
         });
-        const data = response.data.user;
-        console.log(data.fullName);
+
         if (response.data.success) {
+          const data = response.data.user;
           setUserData({
             fullName: data.fullName,
             role: data.role,
-          }); 
+          });
+        } else {
+          console.error("Failed to fetch user data:", response.data.message);
         }
       } catch (error) {
-        console.error("Error fetching user details:", error);
+        console.error("Error fetching user data:", error);
       }
     };
 

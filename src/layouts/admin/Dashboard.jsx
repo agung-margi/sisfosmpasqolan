@@ -1,78 +1,85 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Card, CardContent, Typography, Box } from "@mui/material";
-
-// Define createData function locally
-function createData(NIP, fullname, jabatan, alamat, status) {
-  return { NIP, fullname, jabatan, alamat, status };
-}
-
-// Sample data using createData
-const rows = [
-  createData("123456", "John Doe", "Manager", "123 Main St, New York", "active"),
-  createData("234567", "Jane Smith", "Developer", "456 Elm St, San Francisco", "active"),
-  createData("345678", "Michael Johnson", "Analyst", "789 Oak St, Chicago", "inactive"),
-  // Add more data as needed
-];
+import axios from "../../axiosConfig";
+import { Link } from "react-router-dom";
 
 function DashboardLayout() {
-  const [teacherCount, setTeacherCount] = useState(rows.length);
+  const [teacherCount, setTeacherCount] = useState(0);
+  const [userCount, setUserCount] = useState(0);
+  const [studentCount, setStudentCount] = useState(0);
+  const [ekskulCount, setEkskulCount] = useState(0);
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const teacherResponse = await axios.get("teachers/count");
+        setTeacherCount(teacherResponse.data.count);
+
+        const userResponse = await axios.get("users/count");
+        setUserCount(userResponse.data.count);
+
+        const studentResponse = await axios.get("students/count");
+        setStudentCount(studentResponse.data.count);
+
+        const ekskulResponse = await axios.get("ekskuls/count");
+        setEkskulCount(ekskulResponse.data.count);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchCounts();
+  }, []);
 
   return (
-    <Box mt={3} mx={2}>
-      <div className="grid grid-cols-5 gap-4">
+    <Box mt={3} mx={2} px={2}>
+      <div className="grid grid-cols-4 gap-4">
         <Card elevation={3}>
           <CardContent>
             <Typography variant="h5" component="h2" gutterBottom>
-              Dashboard
+              <Link to="/ppdb" className="font-semibold hover:text-green-700">
+                PPDB
+              </Link>
             </Typography>
             <Typography variant="body1" gutterBottom>
-              Number of Teachers: {teacherCount}
+              Total Siswa PPDB : {studentCount}
             </Typography>
-            {/* Render other dashboard components */}
           </CardContent>
         </Card>
         <Card elevation={3}>
           <CardContent>
             <Typography variant="h5" component="h2" gutterBottom>
-              Dashboard
+              <Link to="/user" className="font-semibold hover:text-green-700">
+                User
+              </Link>
             </Typography>
             <Typography variant="body1" gutterBottom>
-              Number of Teachers: {teacherCount}
+              Total User : {userCount}
             </Typography>
-            {/* Render other dashboard components */}
           </CardContent>
         </Card>
         <Card elevation={3}>
           <CardContent>
             <Typography variant="h5" component="h2" gutterBottom>
-              Dashboard
+              <Link to="/teacher" className="font-semibold hover:text-green-700">
+                Teacher
+              </Link>
             </Typography>
             <Typography variant="body1" gutterBottom>
-              Number of Teachers: {teacherCount}
+              Total Teacher : {teacherCount}
             </Typography>
-            {/* Render other dashboard components */}
           </CardContent>
         </Card>
         <Card elevation={3}>
           <CardContent>
             <Typography variant="h5" component="h2" gutterBottom>
-              Dashboard
+              <Link to="/ekskul" className="font-semibold hover:text-green-700">
+                Ekskul
+              </Link>
             </Typography>
             <Typography variant="body1" gutterBottom>
-              Number of Teachers: {teacherCount}
+              Total Ekskul : {ekskulCount}
             </Typography>
-            {/* Render other dashboard components */}
-          </CardContent>
-        </Card>
-        <Card elevation={3}>
-          <CardContent>
-            <Typography variant="h5" component="h2" gutterBottom>
-              Dashboard
-            </Typography>
-            <Typography variant="body1" gutterBottom>
-              Number of Teachers: {teacherCount}
-            </Typography>
-            {/* Render other dashboard components */}
           </CardContent>
         </Card>
       </div>
