@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import { FaPen, FaTrash, FaEye, FaSearch, FaPlus } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import axios from "../../axiosConfig";
+import TokenContext from '../../components/data/AuthTokenContext'
 
 const columns = [
   { id: "number", label: "No", minWidth: 50 },
@@ -31,6 +32,7 @@ const columns = [
 ];
 
 function UserLayout() {
+  const { tokenInfo } = React.useContext(TokenContext);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [orderBy, setOrderBy] = useState("fullName");
@@ -48,6 +50,8 @@ function UserLayout() {
   const getAllUsers = async (event) => {
     try {
       const response = await axios.get("/get-all-user", {
+        headers: { Authorization: `Bearer ${tokenInfo.token}` },
+      }, {
         params: {
           page: page + 1, // Perhatikan pengaturan di sini untuk menyesuaikan dengan halaman yang dimulai dari 0 di frontend
           limit: rowsPerPage,
@@ -63,8 +67,10 @@ function UserLayout() {
   };
 
   useEffect((event) => {
-    getAllUsers();
-  }, [page, rowsPerPage]);
+    if (tokenInfo.token) {
+      getAllUsers();
+    }
+  }, [page, rowsPerPage, tokenInfo]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -72,7 +78,9 @@ function UserLayout() {
 
   const hendleDelete = async (row) => {
     try {
-      await axios.delete(`/users/${row}`);
+      await axios.delete(`/users/${row}`, {
+        headers: { Authorization: `Bearer ${tokenInfo.token}` },
+      },);
       getAllUsers();
     } catch (error) {
       throw error;
