@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import { FaPen, FaTrash, FaEye, FaSearch, FaPlus } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import axios from "../../axiosConfig"
+
 const columns = [
   { id: "number", label: "No", minWidth: 50 },
   { id: "NIP", label: "NIP", minWidth: 170 },
@@ -32,7 +33,6 @@ const columns = [
     label: "Alamat",
     minWidth: 100,
     align: "right",
-    // format: (value) => value.toLocaleString("en-US"),
   },
   {
     id: "action",
