@@ -15,24 +15,14 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaPen, FaTrash, FaEye, FaSearch, FaPlus } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import axios from "../../axiosConfig"; // Adjust this import according to your axios configuration
+import axios from "../../axiosConfig";
 
 const columns = [
   { id: "number", label: "No", minWidth: 50 },
   { id: "id", label: "ID", minWidth: 170 },
   { id: "fullName", label: "Nama Lengkap", minWidth: 100 },
-  {
-    id: "email",
-    label: "Email",
-    minWidth: 100,
-    align: "right",
-  },
-  {
-    id: "role",
-    label: "Role",
-    minWidth: 100,
-    align: "right",
-  },
+  { id: "email", label: "Email", minWidth: 100 },
+  { id: "role", label: "Role", minWidth: 100 },
   {
     id: "action",
     label: "Action",
@@ -44,7 +34,7 @@ const columns = [
 function UserLayout() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [orderBy, setOrderBy] = useState("fullname");
+  const [orderBy, setOrderBy] = useState("fullName");
   const [order, setOrder] = useState("asc");
   const [openModal, setOpenModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
@@ -55,17 +45,17 @@ function UserLayout() {
 
   const startNumber = page * rowsPerPage + 1;
 
-  // Fetch all users
-  const getAllUsers = async () => {
+  // Pada getAllUsers di frontend
+  const getAllUsers = async (event) => {
     try {
       const response = await axios.get("/get-all-user", {
         params: {
-          page: page + 1, // Adjust page index for backend
+          page: page + 1, // Perhatikan pengaturan di sini untuk menyesuaikan dengan halaman yang dimulai dari 0 di frontend
           limit: rowsPerPage,
         },
       });
-      const responseData = response.data.data;
-      console.log(responseData)
+      console.log("response", response);
+      const responseData = response.data;
       setUsers(responseData.data);
       setTotalCount(response.data.paginationMetadata.totalCount);
     } catch (error) {
@@ -73,7 +63,7 @@ function UserLayout() {
     }
   };
 
-  useEffect(() => {
+  useEffect((event) => {
     getAllUsers();
   }, [page, rowsPerPage]);
 
@@ -81,11 +71,19 @@ function UserLayout() {
     setPage(newPage);
   };
 
+  const hendleDelete = async (row) => {
+    try {
+      await axios.delete(`/users/${row}`);
+      getAllUsers();
+    } catch (error) {
+      throw error;
+    }
+  };
+
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-
   const handleOpenModal = (row) => {
     setSelectedRow(row);
     setOpenModal(true);
@@ -138,7 +136,11 @@ function UserLayout() {
                     <TableCell
                       key={column.id}
                       align={column.align}
-                      style={{ minWidth: column.minWidth, fontWeight: "bold", textAlign: "center" }}
+                      style={{
+                        minWidth: column.minWidth,
+                        fontWeight: "bold",
+                        textAlign: "center",
+                      }}
                     >
                       {column.id !== "number" ? (
                         <TableSortLabel
@@ -158,22 +160,26 @@ function UserLayout() {
               <TableBody>
                 {users && users.length > 0 ? (
                   users.map((row, index) => (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
+                    <TableRow hover role="checkbox" tabIndex={-1} key={row.NIP}>
                       {columns.map((column) => (
-                        <TableCell key={column.id} align={column.align} style={{ textAlign: "center" }}>
+                        <TableCell
+                          key={column.id}
+                          align={column.align}
+                          style={{ textAlign: "center" }}
+                        >
                           {column.id !== "number" ? (
                             column.id === "action" ? (
                               <>
-                                <Button
+                                {/* <Button
                                   variant="contained"
                                   color="warning"
                                   sx={{ marginLeft: 1 }}
                                   style={{ minWidth: "30px", padding: "6px" }}
                                   component={Link}
-                                  to={`/user/edit/${row.id}`}
+                                  to={`/teacher/edit/${row.NIP}`}
                                 >
                                   <FaPen />
-                                </Button>
+                                </Button> */}
                                 <Button
                                   variant="contained"
                                   color="info"
@@ -188,11 +194,14 @@ function UserLayout() {
                                   color="error"
                                   sx={{ marginLeft: 1 }}
                                   style={{ minWidth: "30px", padding: "6px" }}
-                                  onClick={() => handleOpenModal(row)}
+                                  onClick={() => hendleDelete(row.id)}
                                 >
                                   <FaTrash />
                                 </Button>
                               </>
+                            ) : column.format &&
+                              typeof row[column.id] === "number" ? (
+                              column.format(row[column.id])
                             ) : (
                               row[column.id]
                             )
@@ -228,7 +237,7 @@ function UserLayout() {
         <Modal
           open={openModal}
           onClose={handleCloseModal}
-          aria-labelledby="modal-user-details"
+          aria-labelledby="modal-users-details"
           aria-describedby="modal-modal-description"
           BackdropProps={{ onClick: () => { } }}
         >
@@ -246,7 +255,9 @@ function UserLayout() {
               borderRadius: "10px",
             }}
           >
-            <h2 className="font-bold text-2xl mb-8">User Details {selectedRow && selectedRow.name}</h2>
+            <h2 className="font-bold text-2xl mb-8">
+              Users Details {selectedRow && selectedRow.name}
+            </h2>
             <div className="flex justify-end">
               <Button
                 aria-label="close"
@@ -267,24 +278,32 @@ function UserLayout() {
               <img
                 src={selectedRow && selectedRow.imageUrl}
                 alt="Foto profil"
-                className="w-48 h-48 rounded-full mb-4 object-cover shadow-md"
+                className=" h-44 border rounded-sm shadow-lg p-4"
               />
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p>
-                    <strong>ID:</strong> {selectedRow && selectedRow.id}
-                  </p>
-                  <p>
-                    <strong>Nama:</strong> {selectedRow && selectedRow.fullname}
-                  </p>
-                  <p>
-                    <strong>Email:</strong> {selectedRow && selectedRow.email}
-                  </p>
-                  <p>
-                    <strong>Role:</strong> {selectedRow && selectedRow.role}
-                  </p>
-                </div>
-              </div>
+              <table className="mt-5 border">
+                <tbody>
+                  <tr>
+                    <td className="border-2 px-4 py-2 text-left">
+                      Nama Lengkap
+                    </td>
+                    <td className="border-2 px-4 py-2 text-left">
+                      {selectedRow && selectedRow.fullName}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border-2 px-4 py-2 text-left">Role</td>
+                    <td className="border-2 px-4 py-2 text-left">
+                      {selectedRow && selectedRow.role}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="border-2 px-4 py-2 text-left">Email</td>
+                    <td className="border-2 px-4 py-2 text-left">
+                      {selectedRow && selectedRow.email}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </Box>
         </Modal>
