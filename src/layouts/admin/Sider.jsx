@@ -7,7 +7,7 @@ function SiderLayout() {
   return (
     <aside className="w-1/5 bg-white flex flex-col">
       <div className="p-4 font-bold text-sm flex items-center pb-4 mt-4">
-        <img src="./src/assets/img/logo/asqolanlogo.png" alt="Evano" className="w-10 h-10 rounded-full mr-2" />
+        <img src="https://res.cloudinary.com/dnhxlvlmi/image/upload/v1720713068/be9s35suplz2duxqlzf7.png" alt="Evano" className="w-10 h-10 rounded-full mr-2" />
         <div>
           <p>SMP ISLAM ASQOLAN</p>
           <p>BOARDING SCHOOL</p>
