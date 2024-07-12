@@ -19,6 +19,8 @@ import EditPPDBPage from "./pages/admin/ppdb/EditPPDB.jsx";
 import UserPage from "./pages/admin/user/User.jsx";
 import AddTeacherPage from "./pages/admin/teacher/AddTeacher.jsx";
 import EditTeacherPage from "./pages/admin/teacher/EditTeacher.jsx";
+import EkskulPage from "./pages/admin/ekskul/Ekskul.jsx";
+import AddEkskulPage from "./pages/admin/ekskul/AddEkskul.jsx";
 import HomePageFix from "./pages/HomePage.jsx";
 import Ekstrakulikuler from "./pages/Ekstrakulikuler.jsx";
 
@@ -83,6 +85,14 @@ const router = createBrowserRouter([
   {
     path: "/user/",
     element: <UserPage />,
+  },
+  {
+    path: "/ekskul",
+    element: <EkskulPage />,
+  },
+  {
+    path: "/ekskul/add",
+    element: <AddEkskulPage />,
   },
   {
     path: "/ekstrakulikuler",

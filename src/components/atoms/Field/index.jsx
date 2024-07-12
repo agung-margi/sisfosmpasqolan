@@ -7,7 +7,7 @@ const FieldText = (props) => {
       <label htmlFor={props.id} className="ml-2">
         {props.label}
       </label>
-      <TextField id={props.id} variant="outlined" placeholder={props.placeholder} />
+      <TextField id={props.id} variant="outlined" placeholder={props.placeholder}/>
     </div>
   );
 };
