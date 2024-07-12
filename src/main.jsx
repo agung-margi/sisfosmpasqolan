@@ -4,7 +4,6 @@ import ErrorPage from "./pages/404.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LoginPage from "./pages/Login.jsx";
 import RegisterPage from "./pages/Register.jsx";
-import BurgerMenu from "./pages/BurgerMenu.jsx";
 import RegisterAccountPage from "./pages/RegisterAccount.jsx";
 import ResetPasswordPage from "./pages/ResetPassword.jsx";
 import Profile from "./pages/Profile.jsx";
@@ -20,6 +19,13 @@ import EditPPDBPage from "./pages/admin/ppdb/EditPPDB.jsx";
 import UserPage from "./pages/admin/user/User.jsx";
 import AddTeacherPage from "./pages/admin/teacher/AddTeacher.jsx";
 import EditTeacherPage from "./pages/admin/teacher/EditTeacher.jsx";
+import EkskulPage from "./pages/admin/ekskul/Ekskul.jsx";
+import AddEkskulPage from "./pages/admin/ekskul/AddEkskul.jsx";
+import HomePageFix from "./pages/HomePage.jsx";
+import Ekstrakulikuler from "./pages/Ekstrakulikuler.jsx";
+import { ToastContainer } from "react-toastify";
+import { TokenProvider } from "./components/data/AuthTokenContext";
+import "react-toastify/dist/ReactToastify.css";
 
 const router = createBrowserRouter([
   {
@@ -28,7 +34,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/register",
+    path: "/pendaftaran",
     element: <RegisterAccountPage />,
   },
   {
@@ -38,10 +44,6 @@ const router = createBrowserRouter([
   {
     path: "/reset-password",
     element: <ResetPasswordPage />,
-  },
-  {
-    path: "/menu",
-    element: <BurgerMenu />,
   },
   {
     path: "/profile",
@@ -87,10 +89,23 @@ const router = createBrowserRouter([
     path: "/user/",
     element: <UserPage />,
   },
+  {
+    path: "/ekskul",
+    element: <EkskulPage />,
+  },
+  {
+    path: "/ekskul/add",
+    element: <AddEkskulPage />,
+  },
+  {
+    path: "/ekstrakulikuler",
+    element: <Ekstrakulikuler />,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
+    <ToastContainer />
     <RouterProvider router={router} />
   </React.StrictMode>
 );

@@ -31,7 +31,7 @@ const navLinks = ({ type }) => {
     return (
       <p className="mt-2 text-center text-sm text-gray-500">
         Belum Punya Akun?{" "}
-        <Link to={"/register"} className="font-semibold text-blue-600 hover:text-md hover:font-bold">
+        <Link to={"/pendaftaran"} className="font-semibold text-blue-600 hover:text-md hover:font-bold">
           Daftar
         </Link>
       </p>

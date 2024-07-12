@@ -19,7 +19,6 @@ import axios from "../../axiosConfig";
 
 const columns = [
   { id: "number", label: "No", minWidth: 50 },
-  { id: "id", label: "ID", minWidth: 170 },
   { id: "fullName", label: "Nama Lengkap", minWidth: 100 },
   { id: "email", label: "Email", minWidth: 100 },
   { id: "role", label: "Role", minWidth: 100 },
@@ -101,17 +100,12 @@ function UserLayout() {
 
   const handleInputChange = (event) => {
     setSearchQuery(event.target.value);
-    // Implement search functionality here (filtering users based on searchQuery)
   };
 
   return (
     <div>
       <div className="flex flex-row mx-12 my-5 mb-8">
-        <div style={{ flexGrow: 1 }}>
-          <Button component={Link} to="/user/add" variant="contained" color="primary" startIcon={<FaPlus />} size="large">
-            Add User
-          </Button>
-        </div>
+        <div style={{ flexGrow: 1 }}></div>
         <div className="relative">
           <input
             type="search"

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -11,38 +11,24 @@ import TableSortLabel from "@mui/material/TableSortLabel";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
-import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FaPen, FaTrash, FaEye, FaSearch, FaPlus } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import axios from "../../axiosConfig"
+import axios from "../../axiosConfig";
+import { toast, ToastContainer } from "react-toastify";
+import TokenContext from "../../components/data/AuthTokenContext";
 
 const columns = [
   { id: "number", label: "No", minWidth: 50 },
   { id: "NIP", label: "NIP", minWidth: 170 },
   { id: "fullName", label: "Nama Lengkap", minWidth: 100 },
-  {
-    id: "position",
-    label: "Jabatan",
-    minWidth: 100,
-    align: "right",
-    format: (value) => value.toLocaleString("en-US"),
-  },
-  {
-    id: "address",
-    label: "Alamat",
-    minWidth: 100,
-    align: "right",
-  },
-  {
-    id: "action",
-    label: "Action",
-    minWidth: 100,
-    align: "center",
-  },
+  { id: "position", label: "Jabatan", minWidth: 100, align: "right" },
+  { id: "address", label: "Alamat", minWidth: 100, align: "right" },
+  { id: "action", label: "Action", minWidth: 100, align: "center" },
 ];
 
 function TeacherLayout() {
+  const { tokenInfo, refreshToken } = useContext(TokenContext);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [orderBy, setOrderBy] = useState("fullName");
@@ -53,45 +39,90 @@ function TeacherLayout() {
   const [teachers, setTeachers] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [teacherDetails, setTeacherDetails] = useState(null);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [teacherToDelete, setTeacherToDelete] = useState(null);
+
+  const modalStyles = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    p: 4,
+    borderRadius: "10px",
+  };
+
+  useEffect(() => {
+    refreshToken();
+    getAllTeachers();
+  }, [page, rowsPerPage]);
 
   const startNumber = page * rowsPerPage + 1;
 
-  // Pada getAllTeachers di frontend
   const getAllTeachers = async () => {
     try {
       const response = await axios.get("teachers", {
-        params: {
-          page: page + 1, // Perhatikan pengaturan di sini untuk menyesuaikan dengan halaman yang dimulai dari 0 di frontend
-          limit: rowsPerPage,
-        },
+        params: { page: page + 1, limit: rowsPerPage },
       });
-      const responseData = response.data.data;
-      setTeachers(responseData.data);
+      setTeachers(response.data.data.data);
       setTotalCount(response.data.paginationMetadata.totalCount);
     } catch (error) {
       setError(error.message);
     }
   };
 
-  useEffect(() => {
-    getAllTeachers();
-  }, [page, rowsPerPage]);
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+  };
+
+  const handleDelete = async (id) => {
+    setTeacherToDelete(id);
+    setOpenConfirmModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      const response = await axios.delete(`/teacher/${teacherToDelete}`, {
+        headers: { Authorization: `Bearer ${tokenInfo.token}` },
+      });
+
+      console.log("Delete response:", response.data);
+
+      if (response.data.success) {
+        toast.success("Teacher deleted successfully!");
+        getAllTeachers();
+      } else {
+        toast.error(response.data.message || "Failed to delete teacher.");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+      toast.error(`Failed to delete teacher: ${error.response ? error.response.data.message : error.message}`);
+    } finally {
+      setOpenConfirmModal(false);
+      setTeacherToDelete(null);
+    }
   };
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
   };
-  const handleOpenModal = (row) => {
-    setSelectedRow(row);
+
+  const handleOpenModal = async (row) => {
+    setSelectedRow({
+      ...row,
+      image: row.image && row.image.length > 0 ? row.image[0].image : null,
+    });
     setOpenModal(true);
+    await fetchTeacherDetails(row.id);
   };
 
   const handleCloseModal = () => {
     setOpenModal(false);
+    setTeacherDetails(null);
   };
 
   const handleRequestSort = (property) => {
@@ -102,11 +133,26 @@ function TeacherLayout() {
 
   const handleInputChange = (event) => {
     setSearchQuery(event.target.value);
-    // Implement search functionality here (filtering teachers based on searchQuery)
+  };
+
+  const fetchTeacherDetails = async (id) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`/teacher/${id}`);
+      if (!response.data.success) {
+        throw new Error(response.data.message || "Teacher not found");
+      }
+      setTeacherDetails(response.data.data);
+    } catch (error) {
+      setError(error.message || "Failed to fetch teacher details");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div>
+      <ToastContainer />
       <div className="flex flex-row mx-12 my-5 mb-8">
         <div style={{ flexGrow: 1 }}>
           <Button component={Link} to="/teacher/add" variant="contained" color="primary" startIcon={<FaPlus />} size="large">
@@ -149,13 +195,13 @@ function TeacherLayout() {
                           {column.id !== "number" ? (
                             column.id === "action" ? (
                               <>
-                                <Button variant="contained" color="warning" sx={{ marginLeft: 1 }} style={{ minWidth: "30px", padding: "6px" }} component={Link} to={`/teacher/edit/${row.NIP}`}>
+                                <Button variant="contained" color="warning" sx={{ marginLeft: 1 }} style={{ minWidth: "30px", padding: "6px" }} component={Link} to={`/teacher/edit/${row.id}`}>
                                   <FaPen />
                                 </Button>
                                 <Button variant="contained" color="info" sx={{ marginLeft: 1 }} style={{ minWidth: "30px", padding: "6px" }} onClick={() => handleOpenModal(row)}>
                                   <FaEye />
                                 </Button>
-                                <Button variant="contained" color="error" sx={{ marginLeft: 1 }} style={{ minWidth: "30px", padding: "6px" }} onClick={() => handleOpenModal(row)}>
+                                <Button variant="contained" color="error" sx={{ marginLeft: 1 }} style={{ minWidth: "30px", padding: "6px" }} onClick={() => handleDelete(row.id)}>
                                   <FaTrash />
                                 </Button>
                               </>
@@ -181,21 +227,45 @@ function TeacherLayout() {
               </TableBody>
             </Table>
           </TableContainer>
-          <TablePagination
-            rowsPerPageOptions={[10, 25, 100]}
-            component="div"
-            count={totalCount} // Menggunakan totalCount untuk paginasi
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
+          <TablePagination rowsPerPageOptions={[10, 25, 100]} component="div" count={totalCount} rowsPerPage={rowsPerPage} page={page} onPageChange={handleChangePage} onRowsPerPageChange={handleChangeRowsPerPage} />
         </Paper>
 
-        {/* Modal for View Details */}
-        <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-teacher-details" aria-describedby="modal-modal-description" BackdropProps={{ onClick: () => { } }}>
+        <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-teacher-details" aria-describedby="modal-modal-description">
           <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", bgcolor: "background.paper", boxShadow: 24, p: 4, maxWidth: 1080, minWidth: 600, borderRadius: "10px" }}>
-            <h2 className="font-bold text-2xl mb-8">Teacher Details {selectedRow && selectedRow.name}</h2>
+            {loading && <p>Loading...</p>}
+            {error && <p>{error}</p>}
+            {teacherDetails && (
+              <div className="justify-center">
+                <h2 className="font-bold text-2xl mb-8 text-center">{teacherDetails.fullName}</h2>
+                <div className="flex justify-center mb-4">
+                  <img src={teacherDetails.image} alt="Foto Profil" className="rounded-md h-40 w-40 border border-gray-300" />
+                </div>
+                <table className="mt-5 border mx-auto">
+                  <tbody>
+                    <tr>
+                      <td className="border-2 px-4 py-2 text-left">NIP</td>
+                      <td className="border-2 px-4 py-2 text-left">{teacherDetails.NIP}</td>
+                    </tr>
+                    <tr>
+                      <td className="border-2 px-4 py-2 text-left">Nama Lengkap</td>
+                      <td className="border-2 px-4 py-2 text-left">{teacherDetails.fullName}</td>
+                    </tr>
+                    <tr>
+                      <td className="border-2 px-4 py-2 text-left">Alamat Lengkap</td>
+                      <td className="border-2 px-4 py-2 text-left">{teacherDetails.address}</td>
+                    </tr>
+                    <tr>
+                      <td className="border-2 px-4 py-2 text-left">Jabatan</td>
+                      <td className="border-2 px-4 py-2 text-left">{teacherDetails.position}</td>
+                    </tr>
+                    <tr>
+                      <td className="border-2 px-4 py-2 text-left">Subjects</td>
+                      <td className="border-2 px-4 py-2 text-left">{teacherDetails.subjects}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            )}
             <div className="flex justify-end">
               <Button
                 aria-label="close"
@@ -209,35 +279,23 @@ function TeacherLayout() {
                   "&:hover": { color: "black", backgroundColor: "darkgray" },
                 }}
               >
-                <IoMdClose size={24} />
+                <IoMdClose size={20} />
               </Button>
             </div>
-            <div className="flex flex-col items-center justify-center mb-10">
-              <img src={selectedRow && selectedRow.imageUrl} alt="Foto profil" className=" h-44 border rounded-sm shadow-lg p-4" />
-              <table className="mt-5 border">
-                <tbody>
-                  <tr>
-                    <td className="border-2 px-4 py-2 text-left">NIP</td>
-                    <td className="border-2 px-4 py-2 text-left">{selectedRow && selectedRow.NIP}</td>
-                  </tr>
-                  <tr>
-                    <td className="border-2 px-4 py-2 text-left">Nama Lengkap</td>
-                    <td className="border-2 px-4 py-2 text-left">{selectedRow && selectedRow.fullName}</td>
-                  </tr>
-                  <tr>
-                    <td className="border-2 px-4 py-2 text-left">Alamat Lengkap</td>
-                    <td className="border-2 px-4 py-2 text-left">{selectedRow && selectedRow.address}</td>
-                  </tr>
-                  <tr>
-                    <td className="border-2 px-4 py-2 text-left">Jabatan</td>
-                    <td className="border-2 px-4 py-2 text-left">{selectedRow && selectedRow.position}</td>
-                  </tr>
-                  <tr>
-                    <td className="border-2 px-4 py-2 text-left">Status</td>
-                    <td className="border-2 px-4 py-2 text-left">{selectedRow && selectedRow.email}</td>
-                  </tr>
-                </tbody>
-              </table>
+          </Box>
+        </Modal>
+
+        <Modal open={openConfirmModal} onClose={() => setOpenConfirmModal(false)}>
+          <Box sx={{ ...modalStyles }}>
+            <h2 className="font-bold text-xl">Confirm Delete</h2>
+            <p className="text-md mt-4 mb-6">Apakah anda akan menghapus data ini?</p>
+            <div className="flex justify-end">
+              <Button variant="contained" color="error" onClick={confirmDelete}>
+                Delete
+              </Button>
+              <Button variant="contained" onClick={() => setOpenConfirmModal(false)} sx={{ marginLeft: 2 }}>
+                Cancel
+              </Button>
             </div>
           </Box>
         </Modal>

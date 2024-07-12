@@ -1,10 +1,10 @@
 import React from "react";
 import FieldText from "../atoms/Field";
 
-const TeacherForm = () => {
+const TeacherForm = ({ initialValues, onChange, isEdit }) => {
   const fields = [
     { id: "fullName", label: "Nama Lengkap", placeholder: "Nama Lengkap" },
-    { id: "NIP", label: "NIP", placeholder: "NIP" },
+    { id: "NIP", label: "NIP", placeholder: "NIP", disabled: isEdit },
     { id: "address", label: "Alamat Lengkap", placeholder: "Alamat Lengkap" },
     { id: "position", label: "Jabatan", placeholder: "Jabatan" },
     { id: "subjects", label: "Mata Pelajaran", placeholder: "Mata Pelajaran" },
@@ -13,7 +13,7 @@ const TeacherForm = () => {
   return (
     <>
       {fields.map((field) => (
-        <FieldText key={field.id} {...field} />
+        <FieldText key={field.id} {...field} value={initialValues[field.id]} onChange={onChange} disabled={field.disabled} />
       ))}
     </>
   );

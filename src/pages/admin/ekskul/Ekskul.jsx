@@ -1,11 +1,11 @@
 import React from "react";
 import HeaderLayout from "../../../layouts/admin/Header";
 import SiderLayout from "../../../layouts/admin/Sider";
-import TeacherLayout from "../../../layouts/admin/Teacher";
+import Ekskul from "../../../layouts/admin/Ekskul";
 import { TokenProvider } from "../../../components/data/AuthTokenContext";
 
-function TeacherPage() {
-  const titleMenu = "All Teachers";
+export default function EkskulPage() {
+  const titleMenu = "All Ekskuls";
   const rows = [];
 
   return (
@@ -15,12 +15,10 @@ function TeacherPage() {
           <SiderLayout />
           <div className="h-screen w-full">
             <HeaderLayout titleMenu={titleMenu} rows={rows} />
-            <TeacherLayout />
+            <Ekskul />
           </div>
         </div>
       </div>
     </TokenProvider>
   );
 }
-
-export default TeacherPage;

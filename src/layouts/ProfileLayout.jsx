@@ -15,7 +15,6 @@ const ProfileLayout = () => {
       <TentangKami/>
       <StrukturOrganisasi/>
       <DaftarGuruContainer/>
-      <EkskulContainer/>
       <Footer />
     </div>
     </div>

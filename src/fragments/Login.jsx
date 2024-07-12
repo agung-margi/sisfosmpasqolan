@@ -4,6 +4,7 @@ import IndexButton from "../components/atoms/Button";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from '../axiosConfig'
+import { message } from "antd";
 
 const FormLoginFragment = () => {
   const [title, setTitle] = useState("Login");
@@ -21,8 +22,10 @@ const FormLoginFragment = () => {
       passwordValue: e.target.password.value,
     };
 
+    console.log(data)
+
     try {
-      const response = await axios.post('/login', { email: data.emailValue, password: data.passwordValue });
+      const response = await axios.post("/login", { email: data.emailValue, password: data.passwordValue });
 
       const { hasStudentRegis, role } = response.data;
 
@@ -34,6 +37,7 @@ const FormLoginFragment = () => {
         navigate('/daftarsekolah');
       }
     } catch (error) {
+      alert(error.response.data.message)
       setErrorMessage(error.response.data.message);
     }
   };

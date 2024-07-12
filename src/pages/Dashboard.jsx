@@ -1,5 +1,5 @@
 import React from "react";
-import { AuthProvider } from "../components/data/AuthContext"
+import { AuthProvider } from "../components/data/AuthContext";
 import DashboardLayout from "../layouts/DashboardLayout";
 
 const Dashboard = () => {
