@@ -46,22 +46,22 @@ function StrukturOrganisasi() {
   }
 
   return (
-    <div className="container mx-20 items-center justify-center">
+    <div className="container mx-auto px-20 lg:my-16 items-center justify-center">
       <h2 className="text-center font-bold text-2xl md:text-3xl lg:text-4xl text-dark my-20">Struktur Organisasi</h2>
       <div className="w-full flex flex-col items-center">
         {/* Container khusus untuk kepala sekolah */}
         <div className="w-full flex justify-center mb-8">
           <div className="w-1/2 md:w-1/3 p-4 border rounded shadow text-center">
-            <h3 className="text-xl font-bold">Kepala Sekolah</h3>
-            <p className="text-gray-600">Alfiansyah</p>
+            <h3 className="lg:text-xl text-md font-bold">Kepala Sekolah</h3>
+            <p className="text-sm lg:text-base text-center text-gray-600">Alfiansyah</p>
           </div>
         </div>
         {/* Container untuk grid jabatan lainnya */}
         <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-4">
           {position.map((x) => (
             <div key={x.id} className="p-4 border rounded shadow text-center">
-              <h3 className="text-xl font-bold">{x.position}</h3>
-              <p className="text-gray-600">{x.fullName}</p>
+              <h3 className="lg:text-xl text-md font-bold">{x.position}</h3>
+              <p className="text-sm lg:text-base text-center text-gray-600">{x.fullName}</p>
             </div>
           ))}
         </div>

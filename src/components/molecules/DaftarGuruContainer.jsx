@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const DaftarGuruContainer = () => {
-  const [gurus, setGurus] = useState([]); // State to store teacher data
-  const [isLoading, setIsLoading] = useState(true); // State for loading indicator
+  const [gurus, setGurus] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,8 +26,8 @@ const DaftarGuruContainer = () => {
   }, []); // Empty dependency array to fetch data on component mount
 
   return (
-    <div className="container mx-auto items-center justify-center">
-      <h2 className="text-center font-bold text-2xl text-hijau1 my-4">Daftar Guru</h2>
+    <div className="container my-24 mx-auto px-auto items-center justify-center">
+      <h2 className="text-center font-bold text-2xl lg:text-4xl text-hijau1 my-10 lg:my-24">Daftar Guru</h2>
       {isLoading ? (
         <p>Loading teachers...</p>
       ) : (
