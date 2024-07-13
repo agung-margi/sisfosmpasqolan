@@ -8,7 +8,7 @@ import PreatasiContainer from "../components/molecules/PrestasiContainer";
 import GaleriFragment from "../fragments/GaleriFragment";
 const HomepageLayout = () => {
   return (
-    <div>
+    <div >
       <div className="absolute">
         <Nav />
       </div>

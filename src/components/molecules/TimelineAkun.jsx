@@ -12,7 +12,7 @@ const TimelineAkun = () => {
   return (
     <div>
       {studentData ? (
-        <div key={studentData.id} className="space-y-2">
+        <div key={studentData.id} className="">
           <Timeline items={
             [
               {
@@ -22,7 +22,12 @@ const TimelineAkun = () => {
                 children: 'Pendaftaran diproses',
               },
               {
-                children: `Pendaftaran berhasil, Keterangan: ${studentData.status}`,
+                children: (
+                  <span>
+                    Pendaftaran berhasil, Keterangan: 
+                    <strong className='uppercase'> {studentData.status}</strong>
+                  </span>
+                ),
               },
             ]
           } />

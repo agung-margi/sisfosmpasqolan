@@ -8,7 +8,7 @@ const BiodataContainer = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="sm:mx-auto sm:w-full sm:max-w-sm space-y-2 mx-10">
+    <div className="flex justify-left sm:mx-auto sm:w-full sm:max-w-sm">
       {studentData ? <StudentTable studentData={studentData} /> : <div>No student data found</div>}
     </div>
   );

@@ -11,7 +11,7 @@ const GaleriFragment = () => {
     "https://www.smpkasihananda1.sch.id/upload/picture/50021457CAM4(53).jpg",
   ];
   return (
-    <div className="bg-green-400 pb-12">
+    <div className="flex flex-wrap gap-10 bg-green-400">
       <GaleriContainer images={images} />
     </div>
   );

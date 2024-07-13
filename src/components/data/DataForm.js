@@ -12,7 +12,7 @@ const DataForm = [
     type: "text",
   },
   {
-    label: "Tanggal Lahir coy",
+    label: "Tanggal Lahir",
     name: "TanggalLahir",
     placeholder: "mm/dd/yyyy",
     type: "date",

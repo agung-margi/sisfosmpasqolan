@@ -5,10 +5,10 @@ import BiodataContainer from "../components/molecules/BiodataContainer";
 const DashboardFragment = () => {
   return (
 
-    <div className="container mt-28">
-      <div className="flex justify-center items-start space-x-10 my-10 h-screen">
-        <div className="flex justify-center w-[800px] h-[500px] py-10 space-x-10 rounded-md shadow-xl border">
-          <IndexCardImg />
+    <div className="flex justify-center mt-28 text-red">
+      <div className="flex sm:flex-wrap justify-center items-start space-x-10 my-10 h-screen">
+        <div className="flex justify-center w-[800px] h-[500px] p-10 space-x-10 rounded-md shadow-xl border">
+          <IndexCardImg className="flex justify-center items-center" />
           <BiodataContainer />
         </div>
         <div className="space-y-10">

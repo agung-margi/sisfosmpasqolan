@@ -4,8 +4,8 @@ function PrestasiContainer() {
   return (
     <div className="pb-12">
       <h1 className="text-center text-3xl font-semibold py-8 bg-slate-200">Prestasi Kami</h1>
-      <div className="flex justify-center mx-auto px-4 py-16">
-        <div className="grid grid-cols-3 gap-12 ">
+      <div className="flex justify-center flex-wrap mx-auto px-4 py-16">
+        <div className="flex flex-wrap justify-center item-center gap-12">
           <div className="bg-white rounded-md w-52 shadow-2xl shadow-gray-800 border-2">
             <div className="flex justify-center">
               <img src="./src/assets/img/prestasi/2.jpg" alt="Image 3" className="w-50 p-2 h-auto rounded-2xl" />

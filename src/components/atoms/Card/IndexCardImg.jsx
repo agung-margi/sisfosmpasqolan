@@ -8,10 +8,10 @@ const IndexCardImg = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="sm:mx-auto sm:w-full sm:max-w-sm space-y-2 mx-10">
+    <div className="flex justify-center items-center sm:mx-auto sm:w-full sm:max-w-sm space-y-2">
       {studentData ? (
-        <div key={studentData.id} className="space-y-2">
-          <img src={studentData.images} alt="Student" className='w-1/2 float-right' />
+        <div key={studentData.id} className="w-[250px] space-y-2">
+          <img src={studentData.images} alt="Student" className='max-w-full bg-origin-padding p-4' />
         </div>
       ) : (
         <div>No Image found</div>
