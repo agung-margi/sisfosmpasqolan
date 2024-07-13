@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 const columns = [
   { id: "number", label: "No", minWidth: 50 },
   { id: "extraName", label: "Nama", minWidth: 100, align: "center" },
-  { id: "catagory", label: "Katagori", minWidth: 70, align: "center" },
+  { id: "category", label: "Kategori", minWidth: 70, align: "center" }, // Perbaikan typo dari "catagory" menjadi "category"
   { id: "shortDesc", label: "Deskripsi", minWidth: 200, align: "center" },
   { id: "meetingDays", label: "Jadwal", minWidth: 100, align: "center" },
   { id: "coach", label: "Coach", minWidth: 100, align: "center" },
@@ -27,10 +27,16 @@ export default function Ekskul() {
   const [order, setOrder] = useState("asc");
   const [openModal, setOpenModal] = useState(false);
   const [selectedRow, setSelectedRow] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [ekskulDetails, setEkskulDetails] = useState(null);
+
+  useEffect(() => {
+    getEkskul();
+  }, [page, pageRow]);
 
   const getEkskul = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/ekskuls", {
+      const res = await axios.get("/ekskuls", {
         params: {
           page: page + 1,
           limit: pageRow,
@@ -44,9 +50,34 @@ export default function Ekskul() {
     }
   };
 
-  useEffect(() => {
-    getEkskul();
-  }, [page, pageRow]);
+  const getEkskulDetails = async (id) => {
+    try {
+      console.log("id", id);
+      const response = await axios.get(`/ekskul/${id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log("res", response); // Logging response untuk debugging
+      console.log("Detail ekskul:", response.data.data); // Perbaikan disini, gunakan response.data.data
+      setEkskulDetails(response.data.data);
+      setOpenModal(true);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleOpenModal = async (row) => {
+    setSelectedRow({
+      ...row,
+      image: row.image && row.image.length > 0 ? row.image[0].image : null,
+    });
+    await getEkskulDetails(row.id); // Memanggil fungsi untuk mendapatkan detail ekskul berdasarkan ID saat membuka modal
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -65,16 +96,34 @@ export default function Ekskul() {
 
   const handleInputChange = (event) => {
     setSearchQuery(event.target.value);
-    // Implement search functionality here (filtering teachers based on searchQuery)
   };
 
-  const handleOpenModal = (row) => {
-    setSelectedRow(row);
-    setOpenModal(true);
+  const handleEdit = (id) => {
+    console.log(`Edit ekskul with ID: ${id}`);
   };
 
-  const handleCloseModal = () => {
-    setOpenModal(false);
+  const handleDelete = async (id) => {
+    try {
+      console.log("Deleting ekskul with ID:", id);
+      const res = await axios.delete(`/ekskul/${id}`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log("Delete response:", res.data);
+
+      setEkskul(ekskul.filter((item) => item.id !== id));
+
+      setTotal(total - 1);
+
+      if (ekskul.length === 1 && page > 0) {
+        setPage(page - 1);
+      }
+
+      getEkskul();
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -122,13 +171,21 @@ export default function Ekskul() {
                           {col.id !== "number" ? (
                             col.id === "action" ? (
                               <>
-                                <Button variant="contained" color="warning" sx={{ marginTop: 1, marginLeft: 0.5 }} style={{ minWidth: "40px", padding: "8px" }} component={Link} to={`/teacher/edit/${row.NIP}`}>
+                                <Button
+                                  variant="contained"
+                                  color="warning"
+                                  sx={{ marginTop: 1, marginLeft: 0.5 }}
+                                  style={{ minWidth: "40px", padding: "8px" }}
+                                  component={Link}
+                                  to={`/ekskul/edit/${row.id}`}
+                                  onClick={() => handleEdit(row.id)}
+                                >
                                   <FaPen />
                                 </Button>
                                 <Button variant="contained" color="info" sx={{ marginTop: 1, marginLeft: 0.5 }} style={{ minWidth: "40px", padding: "8px" }} onClick={() => handleOpenModal(row)}>
                                   <FaEye />
                                 </Button>
-                                <Button variant="contained" color="error" sx={{ marginTop: 1, marginLeft: 0.5 }} style={{ minWidth: "40px", padding: "8px" }} component={Link} to={`/teacher/edit/${row.NIP}`}>
+                                <Button variant="contained" color="error" sx={{ marginTop: 1, marginLeft: 0.5 }} style={{ minWidth: "40px", padding: "8px" }} onClick={() => handleDelete(row.id)}>
                                   <FaTrash />
                                 </Button>
                               </>
@@ -158,8 +215,38 @@ export default function Ekskul() {
         </Paper>
 
         <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-ekskul-detail" aria-describedby="modal-modal-description">
-          <Box sx={{ position: "absolute", top: "30%", left: "20%", transform: "translate(-10%, -30%)", bgcolor: "white", boxShadow: 24, p: 4, maxWidth: 1120, minWidth: 600, borderRadius: "10px" }}>
-            <p className="font-bold text-xl mb-4">Detail Ekskul {selectedRow && selectedRow.extraName}</p>
+          <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", bgcolor: "background.paper", boxShadow: 24, p: 4, maxWidth: 1080, minWidth: 600, borderRadius: "10px" }}>
+            {loading && <p>Loading...</p>}
+            {error && <p>{error}</p>}
+            {ekskulDetails && (
+              <div className="justify-center">
+                <h2 className="font-bold text-2xl mb-8 text-center">{ekskulDetails.extraName}</h2>
+                <table className="mt-5 border mx-auto">
+                  <tbody>
+                    <tr>
+                      <td className="border-2 px-4 py-2 text-left">Nama</td>
+                      <td className="border-2 px-4 py-2 text-left">{ekskulDetails.extraName}</td>
+                    </tr>
+                    <tr>
+                      <td className="border-2 px-4 py-2 text-left">Kategori</td>
+                      <td className="border-2 px-4 py-2 text-left">{ekskulDetails.category}</td>
+                    </tr>
+                    <tr>
+                      <td className="border-2 px-4 py-2 text-left">Deskripsi</td>
+                      <td className="border-2 px-4 py-2 text-left">{ekskulDetails.shortDesc}</td>
+                    </tr>
+                    <tr>
+                      <td className="border-2 px-4 py-2 text-left">Jadwal</td>
+                      <td className="border-2 px-4 py-2 text-left">{ekskulDetails.meetingDays}</td>
+                    </tr>
+                    <tr>
+                      <td className="border-2 px-4 py-2 text-left">Coach</td>
+                      <td className="border-2 px-4 py-2 text-left">{ekskulDetails.coach}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            )}
             <div className="flex justify-end">
               <Button
                 aria-label="close"
@@ -173,42 +260,8 @@ export default function Ekskul() {
                   "&:hover": { color: "black", backgroundColor: "darkgray" },
                 }}
               >
-                <IoMdClose size={24} />
+                <IoMdClose size={20} />
               </Button>
-            </div>
-            <div className="flex flex-col items-center justify-center mb-5">
-              <table className="mt-5 border">
-                <tbody>
-                  <tr>
-                    <td className="border-2 px-4 py-1 text-left text-sm font-bold">Name</td>
-                    <td className="border-2 px-4 py-1 text-left text-sm">{selectedRow && selectedRow.extraName}</td>
-                  </tr>
-                  <tr>
-                    <td className="border-2 px-4 py-1 text-left text-sm font-bold">Katagori</td>
-                    <td className="border-2 px-4 py-1 text-left text-sm">{selectedRow && selectedRow.catagory}</td>
-                  </tr>
-                  <tr>
-                    <td className="border-2 px-4 py-1 text-left text-sm font-bold">Deskripsi</td>
-                    <td className="border-2 px-4 py-1 text-left text-sm">{selectedRow && selectedRow.fullDesc}</td>
-                  </tr>
-                  <tr>
-                    <td className="border-2 px-4 py-1 text-left text-sm font-bold">Jadwal Pertemuan</td>
-                    <td className="border-2 px-4 py-1 text-left text-sm">{selectedRow && selectedRow.meetingDays}</td>
-                  </tr>
-                  <tr>
-                    <td className="border-2 px-4 py-1 text-left text-sm font-bold">Coach</td>
-                    <td className="border-2 px-4 py-1 text-left text-sm">{selectedRow && selectedRow.coach}</td>
-                  </tr>
-                  <tr>
-                    <td className="border-2 px-4 py-1 text-left text-sm font-bold">Lokasi Ekskul</td>
-                    <td className="border-2 px-4 py-1 text-left text-sm">{selectedRow && selectedRow.location}</td>
-                  </tr>
-                  <tr>
-                    <td className="border-2 px-4 py-1 text-left text-sm font-bold">Informasi Kontak</td>
-                    <td className="border-2 px-4 py-1 text-left text-sm">{selectedRow && selectedRow.contactInfo}</td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
           </Box>
         </Modal>

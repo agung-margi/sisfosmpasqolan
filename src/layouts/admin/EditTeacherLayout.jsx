@@ -34,6 +34,7 @@ function EditTeacherLayout() {
         try {
           const response = await axios.get(`/teacher/${id}`);
           const data = response.data.data;
+          console.log(data);
           if (response.data.success) {
             setTeacherData(data);
             setFormValues({
