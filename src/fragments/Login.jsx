@@ -22,8 +22,6 @@ const FormLoginFragment = () => {
       passwordValue: e.target.password.value,
     };
 
-    console.log(data)
-
     try {
       const response = await axios.post("/login", { email: data.emailValue, password: data.passwordValue });
 
