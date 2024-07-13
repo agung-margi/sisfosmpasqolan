@@ -6,11 +6,14 @@ import RegisterContainer from "../components/molecules/RegisterContainer";
 import { Link, useNavigate } from "react-router-dom";
 import DataForm from "../components/data/DataForm";
 import axios from "../axiosConfig";
-import TokenContext from "../components/data/AuthTokenContext"
+import TokenContext from "../components/data/AuthTokenContext";
+import CircularWithValueLabel from "../components/atoms/CircularWithValueLabel "
 
 const RegisterFragments = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const { tokenInfo, refreshToken } = useContext(TokenContext);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,6 +22,7 @@ const RegisterFragments = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const fullName = e.target.NamaLengkap?.value || "";
     const placeOfBirth = e.target.TempatLahir?.value || "";
@@ -52,16 +56,24 @@ const RegisterFragments = () => {
         setIsSuccess(true);
         navigate('/dashboard');
       } else {
-        console.error("Gagal mengirim data:", response.data.message);
+        // console.error("Gagal mengirim data:", response.data.message);
+        setError(response.data.message);
       }
     } catch (error) {
       console.error("Gagal mengirim data:", error.response ? error.response.data : error.message);
+      setError(error.response ? error.response.data.message : error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <>
-      {isSuccess ? (
+      {loading ? (
+        <div className="flex justify-center items-center h-screen">
+          <CircularWithValueLabel />
+        </div>
+      ) : isSuccess ? (
         <div className="flex flex-col justify-center">
           <Result
             status="success"
@@ -107,6 +119,11 @@ const RegisterFragments = () => {
               </p>
             </div>
           </form>
+        </div>
+      )}
+      {error && (
+        <div className="text-red-500 text-center mt-4">
+          Error: {error}
         </div>
       )}
     </>
