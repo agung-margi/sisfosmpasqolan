@@ -16,7 +16,7 @@ const EkskulContainer = () => {
   };
 
   return (
-    <div className="w-full h-full p-5">
+    <div className="w-full h-full mt-5 p-5">
       <h1 className="text-center font-bold text-3xl">Ekstrakulikuler</h1>
       <NavEkskulLayout navItems={navItems} filterItem={filterItem} setItem={setItem} />
       <CardEkskul item={item} />

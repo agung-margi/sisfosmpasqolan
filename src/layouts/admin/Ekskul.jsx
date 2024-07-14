@@ -1,15 +1,16 @@
-import React from "react";
-import axios from "../../axiosConfig";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { FaEye, FaPen, FaPlus, FaSearch, FaTrash } from "react-icons/fa";
 import { Box, Button, Modal, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, TablePagination } from "@mui/material";
 import { IoMdClose } from "react-icons/io";
-import { useState, useEffect } from "react";
+import axios from "../../axiosConfig";
+import { toast, ToastContainer } from "react-toastify";
+import TokenContext from "../../components/data/AuthTokenContext";
 
 const columns = [
   { id: "number", label: "No", minWidth: 50 },
   { id: "extraName", label: "Nama", minWidth: 100, align: "center" },
-  { id: "category", label: "Kategori", minWidth: 70, align: "center" }, // Perbaikan typo dari "catagory" menjadi "category"
+  { id: "category", label: "Kategori", minWidth: 70, align: "center" },
   { id: "shortDesc", label: "Deskripsi", minWidth: 200, align: "center" },
   { id: "meetingDays", label: "Jadwal", minWidth: 100, align: "center" },
   { id: "coach", label: "Coach", minWidth: 100, align: "center" },
@@ -17,10 +18,11 @@ const columns = [
 ];
 
 export default function Ekskul() {
+  const { tokenInfo, refreshToken } = useContext(TokenContext);
   const [ekskul, setEkskul] = useState([]);
   const [error, setError] = useState(null);
   const [page, setPage] = useState(0);
-  const [pageRow, setRowPage] = useState(3);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [total, setTotal] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const [orderBy, setOrderBy] = useState("extraName");
@@ -29,54 +31,39 @@ export default function Ekskul() {
   const [selectedRow, setSelectedRow] = useState(null);
   const [loading, setLoading] = useState(false);
   const [ekskulDetails, setEkskulDetails] = useState(null);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [ekskulToDelete, setEkskulToDelete] = useState(null);
+  const navigate = useNavigate();
+
+  const modalStyles = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    bgcolor: "background.paper",
+    boxShadow: 24,
+    p: 4,
+    borderRadius: "10px",
+  };
 
   useEffect(() => {
+    refreshToken();
     getEkskul();
-  }, [page, pageRow]);
+  }, [page, rowsPerPage]);
 
   const getEkskul = async () => {
+    setLoading(true); // Set loading state
     try {
-      const res = await axios.get("/ekskuls", {
-        params: {
-          page: page + 1,
-          limit: pageRow,
-        },
+      const response = await axios.get("/ekskuls", {
+        params: { page: page + 1, limit: rowsPerPage },
       });
-      const ekskulData = res.data.data;
-      setEkskul(ekskulData);
-      setTotal(res.data.paginationMetadata.ekskultotal);
+      setEkskul(response.data.data);
+      setTotal(response.data.paginationMetaData.ekskulTotal); // Use correct key
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false); // Reset loading state
     }
-  };
-
-  const getEkskulDetails = async (id) => {
-    try {
-      console.log("id", id);
-      const response = await axios.get(`/ekskul/${id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      console.log("res", response); // Logging response untuk debugging
-      console.log("Detail ekskul:", response.data.data); // Perbaikan disini, gunakan response.data.data
-      setEkskulDetails(response.data.data);
-      setOpenModal(true);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
-  const handleOpenModal = async (row) => {
-    setSelectedRow({
-      ...row,
-      image: row.image && row.image.length > 0 ? row.image[0].image : null,
-    });
-    await getEkskulDetails(row.id); // Memanggil fungsi untuk mendapatkan detail ekskul berdasarkan ID saat membuka modal
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -84,8 +71,19 @@ export default function Ekskul() {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setRowPage(+event.target.value);
+    setRowsPerPage(+event.target.value);
     setPage(0);
+  };
+
+  const handleOpenModal = async (row) => {
+    setSelectedRow(row);
+    await getEkskulDetails(row.id);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setEkskulDetails(null);
   };
 
   const handleRequestSort = (property) => {
@@ -98,36 +96,47 @@ export default function Ekskul() {
     setSearchQuery(event.target.value);
   };
 
-  const handleEdit = (id) => {
-    console.log(`Edit ekskul with ID: ${id}`);
-  };
-
-  const handleDelete = async (id) => {
+  const getEkskulDetails = async (id) => {
+    setLoading(true);
     try {
-      console.log("Deleting ekskul with ID:", id);
-      const res = await axios.delete(`/ekskul/${id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+      const response = await axios.get(`/ekskul/${id}`, {
+        headers: { Authorization: `Bearer ${tokenInfo.token}` },
       });
-      console.log("Delete response:", res.data);
-
-      setEkskul(ekskul.filter((item) => item.id !== id));
-
-      setTotal(total - 1);
-
-      if (ekskul.length === 1 && page > 0) {
-        setPage(page - 1);
-      }
-
-      getEkskul();
+      setEkskulDetails(response.data.data);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = (id) => {
+    setEkskulToDelete(id);
+    setOpenConfirmModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      const response = await axios.delete(`/ekskul/${ekskulToDelete}`, {
+        headers: { Authorization: `Bearer ${tokenInfo.token}` },
+      });
+      if (response.data.success) {
+        toast.success("Ekskul deleted successfully!");
+        navigate("/ekskul");
+      } else {
+        toast.error(response.data.message || "Failed to delete ekskul.");
+      }
+    } catch (error) {
+      toast.error(`Failed to delete ekskul: ${error.message}`);
+    } finally {
+      setOpenConfirmModal(false);
+      setEkskulToDelete(null);
     }
   };
 
   return (
     <div>
+      <ToastContainer />
       <div className="flex flex-row mx-12 my-5 mb-8">
         <div className="grow">
           <Button component={Link} to="/ekskul/add" variant="contained" color="primary" startIcon={<FaPlus />} size="large">
@@ -161,25 +170,16 @@ export default function Ekskul() {
                   ))}
                 </TableRow>
               </TableHead>
-
               <TableBody>
-                {ekskul && ekskul.length > 0 ? (
-                  ekskul?.map((row, index) => (
+                {ekskul.length > 0 ? (
+                  ekskul.map((row, index) => (
                     <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                       {columns.map((col) => (
                         <TableCell key={col.id} align={col.align} style={{ textAlign: "justify" }}>
                           {col.id !== "number" ? (
                             col.id === "action" ? (
                               <>
-                                <Button
-                                  variant="contained"
-                                  color="warning"
-                                  sx={{ marginTop: 1, marginLeft: 0.5 }}
-                                  style={{ minWidth: "40px", padding: "8px" }}
-                                  component={Link}
-                                  to={`/ekskul/edit/${row.id}`}
-                                  onClick={() => handleEdit(row.id)}
-                                >
+                                <Button variant="contained" color="warning" sx={{ marginTop: 1, marginLeft: 0.5 }} style={{ minWidth: "40px", padding: "8px" }} component={Link} to={`/ekskul/edit/${row.id}`}>
                                   <FaPen />
                                 </Button>
                                 <Button variant="contained" color="info" sx={{ marginTop: 1, marginLeft: 0.5 }} style={{ minWidth: "40px", padding: "8px" }} onClick={() => handleOpenModal(row)}>
@@ -189,8 +189,6 @@ export default function Ekskul() {
                                   <FaTrash />
                                 </Button>
                               </>
-                            ) : col.format && typeof row[col.id] === "number" ? (
-                              col.format(row[col.id])
                             ) : (
                               row[col.id]
                             )
@@ -204,39 +202,39 @@ export default function Ekskul() {
                 ) : (
                   <TableRow>
                     <TableCell colSpan={columns.length} align="center">
-                      No data Found
+                      No data found
                     </TableCell>
                   </TableRow>
                 )}
               </TableBody>
             </Table>
           </TableContainer>
-          <TablePagination rowsPerPageOptions={[3, 6, 9]} component="div" count={total} rowsPerPage={pageRow} page={page} onPageChange={handleChangePage} onRowsPerPageChange={handleChangeRowsPerPage} />
+          <TablePagination rowsPerPageOptions={[10, 25, 100]} component="div" count={total} rowsPerPage={rowsPerPage} page={page} onPageChange={handleChangePage} onRowsPerPageChange={handleChangeRowsPerPage} />
         </Paper>
 
-        <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-ekskul-detail" aria-describedby="modal-modal-description">
+        <Modal open={openModal} onClose={handleCloseModal} aria-labelledby="modal-teacher-details" aria-describedby="modal-modal-description">
           <Box sx={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", bgcolor: "background.paper", boxShadow: 24, p: 4, maxWidth: 1080, minWidth: 600, borderRadius: "10px" }}>
             {loading && <p>Loading...</p>}
             {error && <p>{error}</p>}
             {ekskulDetails && (
               <div className="justify-center">
-                <h2 className="font-bold text-2xl mb-8 text-center">{ekskulDetails.extraName}</h2>
+                <h2 className="font-bold text-2xl mb-8 text-center">{ekskulDetails.fullName}</h2>
                 <table className="mt-5 border mx-auto">
                   <tbody>
                     <tr>
-                      <td className="border-2 px-4 py-2 text-left">Nama</td>
+                      <td className="border-2 px-4 py-2 text-left">Nama Ekskul</td>
                       <td className="border-2 px-4 py-2 text-left">{ekskulDetails.extraName}</td>
                     </tr>
                     <tr>
-                      <td className="border-2 px-4 py-2 text-left">Kategori</td>
+                      <td className="border-2 px-4 py-2 text-left">Category Ekskul</td>
                       <td className="border-2 px-4 py-2 text-left">{ekskulDetails.category}</td>
                     </tr>
                     <tr>
-                      <td className="border-2 px-4 py-2 text-left">Deskripsi</td>
-                      <td className="border-2 px-4 py-2 text-left">{ekskulDetails.shortDesc}</td>
+                      <td className="border-2 px-4 py-2 text-left">Description</td>
+                      <td className="border-2 px-4 py-2 text-left">{ekskulDetails.fullDesc}</td>
                     </tr>
                     <tr>
-                      <td className="border-2 px-4 py-2 text-left">Jadwal</td>
+                      <td className="border-2 px-4 py-2 text-left">Meeting Days</td>
                       <td className="border-2 px-4 py-2 text-left">{ekskulDetails.meetingDays}</td>
                     </tr>
                     <tr>
@@ -261,6 +259,23 @@ export default function Ekskul() {
                 }}
               >
                 <IoMdClose size={20} />
+              </Button>
+            </div>
+          </Box>
+        </Modal>
+
+        <Modal open={openConfirmModal} onClose={() => setOpenConfirmModal(false)} aria-labelledby="confirm-delete-title" aria-describedby="confirm-delete-description">
+          <Box sx={modalStyles}>
+            <h2 className="text-lg font-semibold" id="confirm-delete-title">
+              Konfirmasi Penghapusan
+            </h2>
+            <p id="confirm-delete-description">Apakah Anda yakin ingin menghapus ekskul ini?</p>
+            <div className="flex justify-end mt-4">
+              <Button variant="contained" color="error" onClick={confirmDelete}>
+                Hapus
+              </Button>
+              <Button variant="contained" color="primary" onClick={() => setOpenConfirmModal(false)} className="ml-2">
+                Batal
               </Button>
             </div>
           </Box>

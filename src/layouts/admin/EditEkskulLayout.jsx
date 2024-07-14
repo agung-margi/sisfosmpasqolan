@@ -3,7 +3,7 @@ import { Box, Button } from "@mui/material";
 import { GrPowerReset } from "react-icons/gr";
 import { MdOutlineCancel } from "react-icons/md";
 import { FaSave } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate,useParams } from "react-router-dom";
 import EkskulForm from "../../components/molecules/EkskulForm";
 import axios from "../../axiosConfig";
 import { useState } from "react";
@@ -11,9 +11,11 @@ import TokenContext from "../../components/data/AuthTokenContext";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 
-export default function AddEkskulLayout() {
+export default function EditEkskulLayout() {
   const { tokenInfo, refreshToken } = React.useContext(TokenContext);
+  const { id } = useParams();
   const [images, setImages] = useState(null);
+  const [ekskulData, setEkskulData] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -33,6 +35,40 @@ export default function AddEkskulLayout() {
   React.useEffect(() => {
     refreshToken();
   }, []);
+
+
+  React.useEffect(() => {
+    const fetchEkskul = async () => {
+      try {
+        const response = await axios.get(`/ekskul/${id}`, {
+          headers: {
+            Authorization: `Bearer ${tokenInfo.token}`,
+          },
+        });
+        const data = response.data.data;
+        console.log(data);
+        if (response.data.success) {
+          setEkskulData(data);
+          setFormValues({
+            extraName: data.extraName,
+            catagory: data.catagory,
+            shortDesc: data.shortDesc,
+            fullDesc: data.fullDesc,
+            meetingDays: data.meetingDays,
+            coach: data.coach,
+            location: data.location,
+            contactInfo: data.contactInfo,
+          });
+          // setSelectedImages(data.images || []);
+        } else {
+          throw new Error(response.data.message || "Failed to fetch teacher data");
+        }
+      } catch (error) {
+        console.error("Error fetching teacher data:", error);
+      }
+    };
+    fetchEkskul();
+  }, [id]);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -73,7 +109,7 @@ export default function AddEkskulLayout() {
     }
     console.log("Form data to send:", [...formDataToSend]);
     try {
-      const response = await axios.post("/ekskul", formDataToSend, {
+      const response = await axios.put(`/ekskul/${id}`, formDataToSend, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${tokenInfo.token}`,
@@ -109,13 +145,13 @@ export default function AddEkskulLayout() {
   };
 
   const handleCancel = () => {
-    navigate("/ekskul"); // Navigasi ke /ekskul saat membatalkan
+    navigate("/ekskul");
   };
 
   return (
     <div className="flex flex-col bg-white mx-10 my-10 shadow-2xl rounded-lg">
       <div className="ml-10">
-        <h1 className="text-2xl font-bold my-10 ml-2.5">Add Ekskul</h1>
+        <h1 className="text-2xl font-bold my-10 ml-2.5">Edit Ekskul</h1>
         <div>
           <Box
             component="form"

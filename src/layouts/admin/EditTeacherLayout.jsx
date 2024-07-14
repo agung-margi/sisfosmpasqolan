@@ -14,10 +14,10 @@ import { useNavigate } from "react-router-dom";
 function EditTeacherLayout() {
   const { tokenInfo, refreshToken } = useContext(TokenContext);
   const { id } = useParams();
-  const [teacherData, setTeacherData] = React.useState(null);
+  const [teacherData, setTeacherData] = useState(null);
   const [image, setImage] = React.useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
-  const [formValues, setFormValues] = React.useState();
+  const [formValues, setFormValues] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");

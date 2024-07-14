@@ -26,6 +26,7 @@ import Ekstrakulikuler from "./pages/Ekstrakulikuler.jsx";
 import { ToastContainer } from "react-toastify";
 import { TokenProvider } from "./components/data/AuthTokenContext";
 import "react-toastify/dist/ReactToastify.css";
+import EditEkskulPage from "./pages/admin/ekskul/EditEkskul.jsx";
 
 const router = createBrowserRouter([
   {
@@ -92,6 +93,10 @@ const router = createBrowserRouter([
   {
     path: "/ekskul",
     element: <EkskulPage />,
+  },
+  {
+    path: "/ekskul/edit/:id",
+    element: <EditEkskulPage />,
   },
   {
     path: "/ekskul/add",

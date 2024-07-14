@@ -5,7 +5,7 @@ const Footer = () => {
     <footer>
       <div className="bg-hijau1 flex flex-col md:flex-row items-start md:items-center p-8">
         {/* Identitas Sekolah */}
-        <div className="flex flex-col md:flex-row md:justify-start md:items-center mt-5 ">
+        <div className="flex flex-col md:flex-row md:justify-start md:items-center mt-5">
           <div>
             <img
               className="shrink-0 w-16 md:w-24 xl:w-32"

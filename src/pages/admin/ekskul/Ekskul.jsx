@@ -4,8 +4,8 @@ import SiderLayout from "../../../layouts/admin/Sider";
 import Ekskul from "../../../layouts/admin/Ekskul";
 import { TokenProvider } from "../../../components/data/AuthTokenContext";
 
-export default function EkskulPage() {
-  const titleMenu = "All Ekskuls";
+export default function EditEkskul() {
+  const titleMenu = "All Ekstrakulikuler";
   const rows = [];
 
   return (

@@ -16,7 +16,7 @@ const EkskulForm = ({ initialValues, onChange }) => {
   return (
     <>
       {fields.map((field) => (
-        <FieldText key={field.id} id={field.id} label={field.label} placeholder={field.placeholder} value={initialValues[field.id] || ""} onChange={onChange} />
+        <FieldText key={field.id} id={field.id} name={field.id} label={field.label} placeholder={field.placeholder} value={initialValues[field.id]} onChange={onChange} />
       ))}
     </>
   );

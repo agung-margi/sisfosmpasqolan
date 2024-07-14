@@ -1,11 +1,11 @@
 import React from 'react'
 import HeaderLayout from '../../../layouts/admin/Header'
 import SiderLayout from '../../../layouts/admin/Sider'
-import AddEkskulLayout from '../../../layouts/admin/AddEkskulLayout'
+import EditEkskulLayout from '../../../layouts/admin/EditEkskulLayout'
 import { TokenProvider } from '../../../components/data/AuthTokenContext'
 
-export default function AddEkskulPage() {
-  const titleMenu = "Tambahkan Ekstrakulilkuler";
+function EditEkskulPage() {
+  const titleMenu = "Edit Ekstrakulilkuler";
   const rows = [];
 
   return (
@@ -15,10 +15,12 @@ export default function AddEkskulPage() {
           <SiderLayout />
           <div className="h-screen w-full">
             <HeaderLayout titleMenu={titleMenu} rows={rows} />
-            <AddEkskulLayout />
+            <EditEkskulLayout />
           </div>
         </div>
       </div>
     </TokenProvider>
   )
 }
+
+export default EditEkskulPage;
